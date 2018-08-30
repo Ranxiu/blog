@@ -1,6 +1,5 @@
 <?php
 define('ROOT',dirname(__FILE__).'/../'); //项目根目录
-
 //类加载函数
 function autoLoadClass($class)
 {
