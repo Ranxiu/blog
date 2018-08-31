@@ -1,5 +1,6 @@
 <?php
 define('ROOT',dirname(__FILE__).'/../'); //项目根目录
+// define('MANAGE',dirname(__FILE__).'/manage/'); //后台根目录
 //类加载函数
 function autoLoadClass($class)
 {

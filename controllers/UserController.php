@@ -21,12 +21,11 @@ class UserController
     public function setinfo()
     {
         $user = new User;
-        $user->articles();
-        // $name = $user->getName();
-
+        $data = $user->articles();
+        var_dump($data);
         // 加载视图
         view('users.hello', [
-            // 'name' => $name
+            'data' => $data
         ]);
     }
 

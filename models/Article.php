@@ -5,10 +5,14 @@ use models\Model;
 
 class Article extends Model
 {
-    protected $tableName = 'articles';
+    public $tableName = 'articles';
 
-    public function getName()
-    {
-        return 'tom';
+    public function getAll()
+    {   
+        $sql = "select * from ".$this->tableName;
+
+        // echo $sql;
+
+        return $this->find($sql);
     }
 }

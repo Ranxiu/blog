@@ -71,7 +71,7 @@ class Dao
 
 
 		//定义方法，查询所有数据
-		function db_getAll($sql,$data){
+		function db_getAll($sql,$data=[]){
 
 			try{
 				//预处理

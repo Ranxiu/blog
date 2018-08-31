@@ -5,15 +5,16 @@ use models\Article;
 
 class ArticleController
 {
-    public function list()
+    public function main()
     {
         // 取数据
         $Article = new Article;
-        $data = $Article->getName();
-
+        $blog = $Article->getAll();
+        // var_dump($data);
+        // die();
         // 加载视图
-        return view('articles.list', [
-            'data' => $data
+        return view('wirte.blog_list', [
+            'blog' => $blog
         ]);
     }
 }

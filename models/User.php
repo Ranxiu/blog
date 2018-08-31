@@ -5,7 +5,7 @@ use models\Model;
 
 class User extends Model
 {
-    protected $tablename = 'articles';
+    public $tablename = 'articles';
     public function getName()
     {
         return 'tom';
@@ -26,7 +26,10 @@ class User extends Model
     {
         // $this->db_exec('SET NAMES utf8')->db_exec('TRUNCATE articles');
         echo "<pre>";
-        var_dump($this->where('id','>',50)->where('id','<',60)->find());
+        $sql = "select * from articles where id > ?";
+        $num = 90;
+        $data=[$num];
+        return $this->find($sql,$data);
 
         // for($i=0;$i<100;$i++)
         // {
