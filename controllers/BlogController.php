@@ -14,32 +14,26 @@ class BlogController
         // 加载视图
         view('blogs.index', $data);
     }
-    //修改日志 (视图)
-    public function edit(){
-        $id = $_GET['id'];
-
-        $model = new Blog;
-        $blog = $model->find($id);
-        
-        view('blogs.edit',[
-            'blog'=>$blog
-        ]);
-    }
-    //修改日志 （提交）
-    public function update(){
-        $id = $_GET['id'];
-
-        $model = new Blog;
-        
-        $model -> update([
-            'title' => $_POST['title'],
-            'content' => $_POST['content'],
-            'is_show' => $_POST['is_show'],
-        ],'id='.$id);
-
-        // return redirect('/blog/index');
+    //添加日志
+    public function create(){
+        // 加载视图
+        view('blogs.create');
 
     }
+    //添加日志 (视图)
+    public function store(){
+
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $is_show = $_POST['is_show'];
+
+        $blog = new Blog;
+        $blog->add($title,$content,$is_show);
+
+        // 跳转
+        message('发表成功', 2, '/blog/index');
+    }
+   
     // 为所有的日志生成详情页
     public function content2html()
     {

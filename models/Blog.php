@@ -58,7 +58,7 @@ class Blog extends Base
         }
 
         /****************** 翻页 ****************/
-        $perpage = 5; // 每页15
+        $perpage = 15; // 每页15
         // 接收当前页码（大于等于1的整数）， max：最参数中大的值
         $page = isset($_GET['page']) ? max(1,(int)$_GET['page']) : 1;
         // 计算开始的下标
@@ -187,6 +187,9 @@ class Blog extends Base
         // 连接 Redis
         $redis = \libs\Redis::getInstance();
 
+        //普通set/get操作
+       
+
         // 判断 hash 中是否有这个键，如果有就操作内存，如果没有就从数据库中取
         // hexists：判断有没有键
         if($redis->hexists('blog_displays', $key))
@@ -227,4 +230,33 @@ class Blog extends Base
             self::$pdo->exec($sql);
         }
     }
+    //添加日志表单提交
+    public function add($title,$content,$is_show){
+        $date = time();
+        $date = date('Y-m-d H:i:s', $date);
+        // var_dump($date);
+        // die();
+        $stmt = self::$pdo->prepare("INSERT INTO blogs(title,content,is_show,user_id,created_at) VALUES(?,?,?,?,?)");
+        $ret = $stmt->execute([
+            $title,
+            $content,
+            $is_show,
+            $_SESSION['id'],
+            $date,
+        ]);
+        // var_dump( $title, $content, $is_show,$_SESSION['id'],$date);
+        // die();
+        if(!$ret)
+        {
+            echo '失败';
+            // 获取失败信息
+            $error = $stmt->errorInfo();
+            echo '<pre>';
+            var_dump( $error); 
+            exit;
+        }
+        // 返回新插入的记录的ID
+        return self::$pdo->lastInsertId();
+    }
+
 }

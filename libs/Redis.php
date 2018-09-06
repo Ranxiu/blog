@@ -1,4 +1,5 @@
 <?php
+/*单一的*/
 namespace libs;
 
 class Redis {
@@ -16,7 +17,7 @@ class Redis {
            self::$redis = new \Predis\Client([
                 'scheme' =>'tcp',
                 'host' => '127.0.0.1',
-                'port' => 32768,
+                'port' => 6379,
            ]);
            return self::$redis;
         }

@@ -12,7 +12,8 @@
     </style>
 </head>
 <body>
-    <h1>日志列表</h1>
+    <?php view('common.nav') ?>
+    <h1>日志列表</h1>  <h3><a href="/blog/create"></a></h3>  
 
     <form>
         <div>
@@ -66,5 +67,6 @@
     </table>
     <br>
     <?=$btns?>
+    <?php view('common.footer') ?>
 </body>
 </html>

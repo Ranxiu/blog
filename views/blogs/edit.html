@@ -5,6 +5,7 @@
     <title>修改日志</title>
 </head>
 <body>
+    <?php view('common.nav') ?>    
     <h1>修改日志</h1>
     <form method="post" action="/blog/update?id=<?=$blog['id']?>">
         <div>
@@ -24,5 +25,6 @@
             <input type="submit" value="发表">
         </div>
     </form>
+    <?php view('common.footer') ?>
 </body>
 </html>

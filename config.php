@@ -3,20 +3,22 @@ return [
     'redis'=> [
         'scheme' =>'tcp',
         'host' => '127.0.0.1',
-        'port' => 32768,
+        'port' => 6379,
     ],
     'db' => [
         'host' => '127.0.0.1',
         'dbname' => 'blog',
         'user' => 'root',
-        'pass' => ' ',
+        'pass' => '573511',
         'charset' => 'utf8'
     ],
     'email' => [
-        'mode' => 'debug', // 调试模式 debug    生产模式 production 
+        'mode' => '',    // 值：debug  和 production
         'port' => 25,
         'host' => 'smtp.126.com',
-        'email' => 'czxy_qz@126.com',
-        'code' => '12345678abcdefg'
+        'name' => 'ranjianghua@126.com',
+        'pass' => 'mimaSHI573511',
+        'from_email' => 'ranjianghua@126.com',
+        'from_name' => 'ranjianghua',
     ]
 ];

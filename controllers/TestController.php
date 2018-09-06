@@ -11,7 +11,7 @@ class TestController
         $redis = new \Predis\Client([
             'scheme' => 'tcp',
             'host'   => '127.0.0.1',
-            'port'   => 32768,
+            'port'   => 6379,
         ]);
 
         // 消息队列的信息
@@ -78,7 +78,7 @@ class TestController
         $message->setSubject('测试标题')   // 标题
                 ->setFrom(['czxy_qz@126.com' => '全栈1班'])   // 发件人
                 ->setTo(['fortheday@126.com', 'fortheday@126.com' => '你好'])   // 收件人
-                ->setBody('Hello <a href="http://localhost:9999">点击激活</a> World ~', 'text/html');     // 邮件内容及邮件内容类型
+                ->setBody('Hello <a href="http://localhost:8000">点击激活</a> World ~', 'text/html');     // 邮件内容及邮件内容类型
 
         // 发送邮件
         $ret = $mailer->send($message);
