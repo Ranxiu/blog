@@ -10,7 +10,7 @@ class Blog extends Base
     public function search()
     {
         // 设置的 $where
-        $where = 1;
+        $where = 'user_id='.$_SESSION['id'];
 
         // 放预处理对应的值
         $value = [];
@@ -175,6 +175,15 @@ class Blog extends Base
         // 把页面的内容生成到一个静态页中
         file_put_contents(ROOT.'public/index.html', $str);
 
+    }
+    //删除日志
+    public function delete($id){
+        //只能删除自己的日志
+        $stmt = self::$pdo->prepare('DELETE FROM blogs WHERE id = ? AND user_id = ?');
+        $stmt->execute([
+            $id,
+            $_SESSION['id'],
+        ]);
     }
 
     // 获取日志的浏览量

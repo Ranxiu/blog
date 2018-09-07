@@ -68,7 +68,11 @@ function redirect($url)
     header('Location:' . $url);
     exit;
 }
+//过滤xss攻击函数  <?=e($title)
+function e($content){
 
+    return htmlspecialchars($content);
+}
 // 跳回上一个页面
 function back()
 {

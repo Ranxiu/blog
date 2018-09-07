@@ -41,6 +41,17 @@ class BlogController
         $blog->content2html();
     }
 
+    //删除日志
+    public function delete(){
+        $id = $_GET['id'];
+
+        $blog = new Blog;
+        
+        $blog->delete($id);
+
+        message('删除成功',2,'/blog/index');
+    }
+
     public function index2html()
     {
         $blog = new Blog;
