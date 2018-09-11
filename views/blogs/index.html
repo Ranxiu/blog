@@ -60,7 +60,10 @@
             <td><?=e($v['display'])?></td>
             <td>
                 <a href="/blog/edit?id=<?=$v['id']?>">修改</a>
-                <a onclick="return confirm('确定要删除吗？');" href="/blog/delete?id=<?=$v['id']?>">删除</a>
+                <form action="/blog/delete" methods="post">
+                    <input type="hidden" name="id" value="<?=$v['id']?>">
+                    <input type="submit" value="删除">
+                </form>
             </td>
         </tr>
         <?php endforeach; ?>

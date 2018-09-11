@@ -108,21 +108,63 @@ class Blog extends Base
     //获取一条数据的方法
     public function find($id){
      
-        // echo $sql;
-        // die();
-        $stmt = self::$pdo->query("SELECT * FROM blogs WHERE id = $id ");
        
-        $blog = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $blog;
+        $stmt = self::$pdo->prepare("SELECT * FROM blogs WHERE id = ? ");
+       
+        $stmt->execute([
+            $id
+        ]);
+        
+       return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
-    //修改数据
-    public function update($blog){
-        // echo $_GET['id'];
-        $sql = "UPDATE blogs SET title = {$blog['title']} and content = {$blog['content']} and is_show = {$blog['is_show']} where id = {$_GET['id']}";
-        $stmt = self::$pdo->exec($sql);
+    //修改日志数据
+    public function update($title,$content,$is_show,$id)
+    {   
+        $sql = "UPDATE blogs SET title= '{$title}',content= '{$content}',is_show={$is_show} WHERE id={$id}";
+        // echo $sql;
+        if($is_show == 1)
+        {
+            $blog->makeHtml($id);
+        }
+        else
+        {
+            // 如果改为私有，就要将原来的静态页删除掉
+            $blog->deleteHtml($id);
+        }
 
+        return $stmt = self::$pdo->exec($sql);
+        // return $stmt->execute([
+        //     $title,
+        //     $content,
+        //     $is_show,
+        //     $id,
+        // ]);
+            // echo $sql;
+        // var_dump($title,$content,$is_show,$id);
+    }
+
+    //为某一个日志生成静态页面
+        //参数：日志的id
+        public function makeHtml($id){
+            //1.取出日志的信息
+            $blog = $this->find($id);
+
+            //2.打开缓冲区、并且加载视图到缓冲区
+            ob_start();
+            view('blogs.content',[
+                'blog' => $blog,
+            ]);
+
+            //3.从缓冲区取出视图并写到静态页中
+            $str = ob_get_clean();
+
+            file_put_contents(ROOT.'public/contents/'.$id.'.html',$str);
+        }
+    //删除静态页
+    public function deleteHtml($id){
+        //@防止 报错： 有这个文件就会删除，没有就不删除，不用报错
+        @unlink(ROOT.'public/contents/'.$id.'.html');
     }
 
     public function content2html()
@@ -180,12 +222,14 @@ class Blog extends Base
     public function delete($id){
         //只能删除自己的日志
         $stmt = self::$pdo->prepare('DELETE FROM blogs WHERE id = ? AND user_id = ?');
+        $blog->deleteHtml($id);
         $stmt->execute([
             $id,
             $_SESSION['id'],
         ]);
     }
 
+    
     // 获取日志的浏览量
     // 参数：日志ID
     public function getDisplay($id)
@@ -243,8 +287,13 @@ class Blog extends Base
     public function add($title,$content,$is_show){
         $date = time();
         $date = date('Y-m-d H:i:s', $date);
-        // var_dump($date);
-        // die();
+       
+        // 如果日志是公开的就生成静态页
+        if($is_show == 1)
+        {
+            $blog->makeHtml($id);
+        }
+        
         $stmt = self::$pdo->prepare("INSERT INTO blogs(title,content,is_show,user_id,created_at) VALUES(?,?,?,?,?)");
         $ret = $stmt->execute([
             $title,

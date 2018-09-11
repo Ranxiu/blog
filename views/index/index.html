@@ -11,9 +11,15 @@
         <?php foreach($blogs as $v): ?>
 
             <li>
+                <?php if($v['is_show']==1):?>
                 <a target="_blank" href="/contents/<?=$v['id']?>.html">
-                    <?=$v['title']?>
+                    <?=e($v['title'])?>
                 </a>
+                <?php else:?>
+                <a target="_blank" href="/blog/content?id=<?=$v['id']?>">
+                    <?=e($v['title'])?>
+                </a>
+                <?php endif; ?>
             </li>
 
         <?php endforeach; ?>

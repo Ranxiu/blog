@@ -27,11 +27,44 @@ class User extends Base
         if($user){
             $_SESSION['id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['money'] = $user['money'];
             return TRUE;
         }
         else{
             return FALSE;
         }
     }
+    // 为用户增加金额
+    public function addMoney($money, $userId)
+    {
+        $stmt = self::$pdo->prepare("UPDATE users SET money=money+? WHERE id=?");
+        return $stmt->execute([
+            $money,
+            $userId
+        ]);
+
+    }
+
+    // 获取余额
+    public function getMoney()
+    {
+        $id = $_SESSION['id'];
+        $redis = \libs\Redis::getInstance();
+        $key = 'user_money:'.$id;
+
+        $money = $redis->get($key);
+        if($money)
+            return $money;
+        else
+        {
+            $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id = ?');
+            $stmt->execute([$id]);
+            $money = $stmt->fetch( PDO::FETCH_COLUMN );
+            // 保存到 Redis
+            $redis->set($key, $money);
+            return $money;
+        }
+    }
+      
 
 }

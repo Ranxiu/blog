@@ -3,16 +3,40 @@ namespace controllers;
 
 // 引入模型类
 use models\User;
+use models\Order;
 // use libs\Redis;
 
 class UserController
-{
+{  
+     // 显示注册视图
     public function register()
     {
-        // 显示视图
+        
         view('users.add');
     }
 
+    //充值方法
+    public function docharge(){
+        //生成定单
+        $money = $_POST['money'];
+        $model = new Order;
+        
+        $model->create($money);
+        message('充值订单已生成，请立即支付！',2,'/user/orders');
+    }
+    //显示所有订单页面
+    public function orders(){
+
+        $order = new Order;
+
+        //搜索数据
+        $data = $order->search();
+
+        //加载视图
+
+        view('users.order',$data);
+    }
+    
     public function hello()
     {
         // 取数据
@@ -30,6 +54,13 @@ class UserController
         echo 'world';
     }
 
+    //显示充值视图
+    public function charge(){
+        
+        view('users.charge');
+    }
+
+    //
 
     //呈现登陆界面
     public function login(){
