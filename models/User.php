@@ -49,22 +49,15 @@ class User extends Base
     public function getMoney()
     {
         $id = $_SESSION['id'];
-        $redis = \libs\Redis::getInstance();
-        $key = 'user_money:'.$id;
-
-        $money = $redis->get($key);
-        if($money)
-            return $money;
-        else
-        {
-            $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id = ?');
-            $stmt->execute([$id]);
-            $money = $stmt->fetch( PDO::FETCH_COLUMN );
-            // 保存到 Redis
-            $redis->set($key, $money);
-            return $money;
-        }
+        
+        //根据当前用户id查询当前数据库中的余额
+        $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id = ?');
+        $stmt->execute([$id]);
+        $money = $stmt->fetch( PDO::FETCH_COLUMN );
+        // 更新到SESSION中
+        $_SESSION['money'] = $money;
+        
+        return $money;
+        
     }
-      
-
 }

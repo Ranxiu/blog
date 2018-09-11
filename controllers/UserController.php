@@ -15,6 +15,12 @@ class UserController
         view('users.add');
     }
 
+    //服务器添加取余额接口
+    public function money(){
+        $user = new User;
+        echo $user->getMoney();
+    }
+
     //充值方法
     public function docharge(){
         //生成定单
@@ -70,8 +76,10 @@ class UserController
     
     //退出登陆
     public function logout(){
-        $_SEESION = [];
-        die('退出成功！');
+
+        unset($_SESSION['id']);
+      
+        message('退出成功',2,'/user/login');
     }
 
     //登陆校验

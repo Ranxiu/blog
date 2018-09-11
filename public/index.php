@@ -4,9 +4,9 @@ define('ROOT',dirname(__FILE__).'/../'); //项目根目录
 //引入composer 自动加载文件
 require(ROOT.'vendor/autoload.php');
 
-// 动态的修改 php.ini 配置文件
-ini_set('session.save_handler', 'redis');   // 使用 redis 保存 SESSION
-ini_set('session.save_path', 'tcp://127.0.0.1:6379?database=1');  // 设置 redis 服务器的地址、端口、使用的数据库
+// // 动态的修改 php.ini 配置文件
+// ini_set('session.save_handler', 'redis');   // 使用 redis 保存 SESSION
+// ini_set('session.save_path', 'tcp://127.0.0.1:6379?database=1');  // 设置 redis 服务器的地址、端口、使用的数据库
 // ini_set('session.gc_maxlifetime', 600);   // 设置 SESSION 10分钟过期
 
 //开启SESSION

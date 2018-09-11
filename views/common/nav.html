@@ -1,13 +1,19 @@
 
 <a href="/">首页</a>
+
+<script src="/simditor-2.3.6/scripts/jquery.min.js"></script>
+
+
+<?php if(isset($_SESSION['id'])):?>
 <a href="/blog/index">日志列表</a>
 <a href="/user/charge">充值</a>
 <a href="/user/orders">充值列表</a>
-<?php if(isset($_SESSION['id'])):?>
 <?=$_SESSION['email']?>
-（ <span style="color:#F00;font-weight:bold;">
+（ <span id="show_money" style="color:#F00;font-weight:bold;">
       <?=$_SESSION['money']?>
- </span> 元）
+ </span> 元
+<input type="button" id="btn_money" value="更新余额">
+ ）
 <a href="/user/logout">退出</a>
 <?php else:  ?>
 <a href="/user/register">注册</a>
@@ -34,3 +40,9 @@ var si = setInterval(function(){
 }, 1000);
 </script>
 <?php endif; ?>
+<script>
+    $("#btn_money").click(function(){
+        // alert(123);
+        $("#show_money").load("/user/money");
+    });
+</script>
