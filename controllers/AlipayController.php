@@ -16,6 +16,13 @@ class AlipayController
         // 'notify_url' => 'http://requestbin.fullcontact.com/1hmzw3j1', // 支付成功后台通知地址
         // 跳回地址
         'return_url' => 'http://localhost:8000/alipay/return',
+
+        // 'log' => [ // optional
+        //     'file' => './logs/alipay.log',
+        //     'level' => 'debug',
+        //     'type' => 'single', // optional, 可选 daily.
+        //     'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
+        // ],
         // 支付宝公钥
         'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtYvPNIQetrwPMHbvxaYvVN9pAdWBy4MyUqeikAwc7bij0u3AuNjPdoAI8M10Y4lrXldY98Uihgx7BIpvC9QyQo/mRT5t5v9s0zbHEgPhwEVFxRO1nNNRF4yjP6JHIA8Nz/STKdV14ulkDIR4cVLRvXpymGdIcJTlOezOopPEmWHkl4mAAIXjcZu0H/r/J6M+5bPCYhEeJrJt4ZraqaAI7DSZiekBm4pGPJjvnlFbX/7FI9OnxTg1jYo7kXQyiLP+Pe7hlQ15D61/R14RLnOixZv1D636FGyHDEVS7XZdFbDozAUbR2IwjqdobPXWfUE0DULgkYDqqzJS0OIxf4IEkwIDAQAB',
         // 商户应用密钥
