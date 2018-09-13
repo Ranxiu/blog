@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <?php view('common.nav') ?>
+
+
+    <h1>批量上传</h1>
+
+    <form action="/user/uploadall" method="post" enctype="multipart/form-data">
+        <input type="file" name="images[]"> <br>
+        <input type="file" name="images[]"> <br>
+        <input type="file" name="images[]"> <br>
+        <input type="file" name="images[]"> <br>
+        <input type="file" name="images[]"> <br>
+        <input type="submit" value="提交">
+    </form>
+    <?php view('common.footer') ?>
+</body>
+</html>

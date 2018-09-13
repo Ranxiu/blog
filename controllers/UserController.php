@@ -4,21 +4,79 @@ namespace controllers;
 // 引入模型类
 use models\User;
 use models\Order;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 // use libs\Redis;
 
 class UserController
-{  
+{   
+
+    //显示批量上传视图
+    public function douploadm(){
+        view('users.uploads');
+    }
+    //批量上传处理函数
+    public function uploadall(){
+        $upload = \libs\Uploader::make();
+        //参数一、 表单中的文件名
+        //参数二、 保存到二级目录名
+        $path = $upload->uploadall('many');
+    }
+
+    //显示大文件上传的视图
+    public function uploadBig(){
+        view('users.upbig');
+    }
+
+    //处理大文件函数
+    public function uploadbigimg(){
+         /* 接收提交的数据 */
+        $count = $_POST['count'];  // 总的数量
+        $i =$_POST['i'];        // 当前是第几块
+        // var_dump( $serve,$i);
+        $size = $_POST['size'];   // 每块大小
+        $name = 'big_img_'.$_POST['img_name'];  // 所有分块的名字
+        $img = $_FILES['img'];    // 图片
+        /* 保存每个分片 */
+        
+        move_uploaded_file( $img['tmp_name'] , ROOT.'tmp/'.$i);
+        /* 最后一个图片上传成功之后，合并所有图片 */
+        // 思考：如何判断是否所有图片都已经上传成功？
+        // 难点：因为每个分块到达服务器的顺序不固定，所以我们不能根据顺序来判断是否都上传成功。
+        // 实现思路：每上传一个就+1，直到上传的数量等于总的数量
+        $redis = \libs\Redis::getInstance();
+        // 每上传一张就加1
+        $uploadedCount = $redis->incr($name);
+        // 如果是最后一个分支就合并
+        if($uploadedCount == $count)
+        {
+            // 以追回的方式创建并打开最终的大文件
+            $fp = fopen(ROOT.'public/uploads/big/'.$name.'.png', 'a');
+            // 循环所有的分片
+            for($i=0; $i<$count; $i++)
+            {
+                // 读取第 i 号文件并写到大文件中
+                fwrite($fp, file_get_contents(ROOT.'tmp/'.$i));
+                // 删除第 i 号临时文件
+                unlink(ROOT.'tmp/'.$i);
+            }
+            // 关闭文件
+            fclose($fp);
+            // 从 redis 中删除这个文件对应的编号这个变量
+            $redis->del($name);
+        }
+    }
+    
      // 显示注册视图
     public function register()
     {
-        
         view('users.add');
     }
 
-    public function setavatar(){
-        // echo '<pre>';
-        // var_dump($_FILES);
 
+    //调用图片上传类 实现图片上传
+    public function setavatar(){
+       
        $upload = \libs\Uploader::make();
         //参数一、 表单中的文件名
         //参数二、 保存到二级目录名
@@ -210,6 +268,60 @@ class UserController
         {
             die('激活码无效！');
         }
+    }
+    // 获取最新的10个日志
+    public function makeExcel()
+    {
+        // 获取当前标签页
+        $spreadsheet = new Spreadsheet();
+        // 获取当前工作
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // 设置第1行内容
+        $sheet->setCellValue('A1', '标题');
+        $sheet->setCellValue('B1', '内容');
+        $sheet->setCellValue('C1', '发表时间');
+        $sheet->setCellValue('D1', '是发公开');
+
+        // 取出数据库中的日志
+        $model = new \models\Blog;
+        // 获取最新的10个日志
+        $blogs = $model->getNew();
+
+        $i=2; // 第几行
+        foreach($blogs as $v)
+        {
+            $sheet->setCellValue('A'.$i, $v['title']);
+            $sheet->setCellValue('B'.$i, $v['content']);
+            $sheet->setCellValue('C'.$i, $v['created_at']);
+            $sheet->setCellValue('D'.$i, $v['is_show']);
+            $i++;
+        }
+
+        $date = date('Ymd');
+
+        // 生成 excel 文件
+        $writer = new Xlsx($spreadsheet);
+        $writer->save(ROOT . 'excel/'.$date.'.xlsx');
+
+        // 调用 header 函数设置协议头，告诉浏览器开始下载文件
+
+        // 下载文件路径
+        $file = ROOT . 'excel/'.$date.'.xlsx';
+        // 下载时文件名
+        $fileName = '最新的20条日志-'.$date.'.xlsx';
+
+        // 告诉浏览器这是一个二进程文件流    
+        Header ( "Content-Type: application/octet-stream" ); 
+        // 请求范围的度量单位  
+        Header ( "Accept-Ranges: bytes" );  
+        // 告诉浏览器文件尺寸    
+        Header ( "Accept-Length: " . filesize ( $file ) );  
+        // 开始下载，下载时的文件名
+        Header ( "Content-Disposition: attachment; filename=" . $fileName );    
+
+        // 读取服务器上的一个文件并以文件流的形式输出给浏览器
+        readfile($file);
     }
 
 }

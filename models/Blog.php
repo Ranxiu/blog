@@ -5,7 +5,19 @@ use PDO;
 
 class Blog extends Base
 {
-    
+    //获取最新的10个日志 供excel使用
+    public function getNew(){
+
+        $stmt = self::$pdo->prepare("SELECT * FROM blogs WHERE 'user_id' = ? ");
+    //    var_dump("SELECT * FROM blogs WHERE user_id = 1 ");
+        $stmt->execute([
+            $_SESSION['id']
+        ]);
+        
+       return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //    var_dump($stmt->fetch(PDO::FETCH_ASSOC));
+    }
     // 搜索日志
     public function search()
     {

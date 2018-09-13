@@ -57,12 +57,12 @@ class Uploader {
     //创建目录
     private function _makeDir(){
 
-        $dir = $this->_subDir.'/'. date("Ymd");
+        $dir = $this->_subDir.'/'. date("Ymd").'/';
 
         //根据当天日期创建目录（如果目录不存在） 
-        if(!is_dir($this->root.$dir)){
+        if(!is_dir($this->_root.$dir)){
 
-            mkdir($this->root.$dir,0777,TRUE);
+            mkdir($this->_root.$dir,0777,TRUE);
         }
 
         return $dir;
@@ -71,7 +71,7 @@ class Uploader {
     //生成唯一的图片名称
     private function _makeName(){
         $name = md5(time().rand(1,9999));
-        $ext = strtchr($this->_file['name'],'.');
+        $ext = strrchr($this->_file['name'],'.');
         return $name.$ext;
     }
 
@@ -81,7 +81,27 @@ class Uploader {
     }
 
     private function _checkSize(){
-        return $this->file['size'] < $this->_maxSize;
+        return $this->_file['size'] < $this->_maxSize;
+    }
+
+
+
+    //批量上传
+    public function uploadall($subdir){
+        
+        $this->_subDir = $subdir;
+        //创建目录
+        $dir = $this->_makeDir();
+        //循环多张图片的name
+        foreach($_FILES['images']['name'] as $k => $v){
+            $name = md5( time() . rand(1,9999) );
+            $ext = strrchr($v, '.');    // .jpg
+            $name = $name . $ext;
+            // 根据 name 的下标找到对应的临时文件并移动
+            move_uploaded_file($_FILES['images']['tmp_name'][$k], $this->_root.$dir.$name);
+            echo $this->_root.$dir.$name. '<hr>';
+            // var_dump( $this->_root.$dir.$name);
+        }
     }
 }
 ?>

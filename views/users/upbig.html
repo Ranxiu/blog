@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <?php view('common.nav') ?>
+
+
+    <h1>批量上传</h1>
+
+    <form action="/user/uploadall" method="post" enctype="multipart/form-data">
+        <input id="img" type="file" name="images"> <br>
+        <input type="submit" value="提交">
+    </form>
+    <?php view('common.footer') ?>
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+    var img = document.getElementById('img');
+    img.onchange = function(){
+        //获取图片
+        var image = this.files[0];
+        // console.log(image);
+        var fileSize = image.size;
+        var perSize = 40960; //单位比特
+
+        //计算一下 分割之后的块数
+        var count = Math.ceil(fileSize/perSize);
+        //为所有分片生成一个随机唯一的名字
+        var name = "img_"+Math.random(1,99999);
+        for(var i=0;i<count;i++){
+            var images = image.slice(i*perSize,i*perSize+perSize);
+            //创建一个FormData对象
+            var f = new FormData();
+            //加入到表单中
+            f.append('img',images)  //图片数据
+            f.append('count',count) //总的块数
+            f.append('i',i)        //当前图片是第几块
+            f.append('size',perSize) //每块尺寸
+            f.append('img_name',name) //名字
+            // 上传的服务器
+            $.ajax({
+                type : "POST",
+                url : "/user/uploadbigimg",
+                data : f,
+                contentType: false,
+                processData: false,
+                success:function(data){
+
+                }
+            });
+        }
+
+    }
+</script>
