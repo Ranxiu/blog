@@ -8,26 +8,44 @@ class WxpayController {
         'app_id' => 'wx426b3015555a46be', 
         'mch_id' => '1900009851',
         'key' => '8934e7d15453e97507ef794cf7b0519d',
-        'notify_url' =>'http://fb52jx.natappfree.cc/wxpay/notify', //接收微信支付后台返回的通知
+        'notify_url' =>'http://yu5yaf.natappfree.cc/wxpay/notify', //接收微信支付后台返回的通知
     ];
 
     public function pay(){
-        $order = [
-            'out_trade_no'=>time(),
-            'total_fee'=>'1', 
-            'body'=>'test body-测试',
-        ];
+        
+        //接收订单编号
+        $sn = $_POST['sn'];
+        //取出订单信息
+        $order = new \models\Order;
+        //根据订单取出订单信息
+        $data = $order->findBySn($sn);
 
-        $pay = Pay::wechat($this->config)->scan($order);
+        if($data['status']==0){
 
-        echo "<pre>";
-        var_dump($pay->all());
+            $pay = Pay::wechat($this->config)->scan([
+                'out_trade_no'=>$data['sn'],
+                'total_fee'=>$data['money']*100, //单位：分
+                'body'=>'智聊系统用户充值：'.$data['money'].'元',
+            ]);
+
+            if($pay->return_code=='SUCCESS'&& $pay->result_code=='SUCCESS'){
+                //加载二维码视图
+                view('users.wxpay',[
+                    'code'=>$pay->code_url,
+                    'sn'=>$sn,
+                ]);
+            }
+        }else{
+            die('订单状态不允许支付~');
+        }
     }
     //生成二维码
 
     public function qrcode()
-    {
-        $qrCode = new QrCode('weixin://wxpay/bizpayurl?pr=PtcH2K4');
+    {   
+        $code = $_GET['code'];
+
+        $qrCode = new QrCode($code);
         header('Content-Type: '.$qrCode->getContentType());
         echo $qrCode->writeString();
     }

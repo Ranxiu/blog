@@ -15,6 +15,20 @@ class UserController
         view('users.add');
     }
 
+    public function setavatar(){
+        // echo '<pre>';
+        // var_dump($_FILES);
+
+       $upload = \libs\Uploader::make();
+        //参数一、 表单中的文件名
+        //参数二、 保存到二级目录名
+        $path = $upload->upload('avatar','avatar');
+    }
+
+    //显示上传头像视图
+    public function avatar(){
+        view('users.avatar');
+    }
     //服务器添加取余额接口
     public function money(){
         $user = new User;
@@ -66,7 +80,27 @@ class UserController
         view('users.charge');
     }
 
-    //
+    //查询订单状态的接口
+    public function orderStatus(){
+        $sn  = $_GET['sn'];
+
+        $try = 5;
+        $model = new Order;
+
+        do{
+            //查询订单信息
+            $info = $model->findBySn($sn);
+            //如果订单未支付就等待1秒，并减少尝试的次数，如果已经支付就退出循环
+            if($info['status']==0){
+                sleep(1);
+                $try--;
+            }else{
+                break;
+            }
+        }while($try>0); 
+        
+        echo $info['status'];
+    }
 
     //呈现登陆界面
     public function login(){
