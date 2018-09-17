@@ -4,7 +4,19 @@ namespace models;
 use PDO;
 
 class User extends Base
-{
+{   
+    
+    //设置头像
+    public function setAvatar($path)
+    {
+        $stmt = self::$pdo->prepare('UPDATE users SET avatar=? WHERE id=?');
+        $stmt->execute([
+            $path,
+            $_SESSION['id']
+        ]);
+    }
+
+
     
     public function add($email,$password)
     {
@@ -28,6 +40,7 @@ class User extends Base
             $_SESSION['id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['money'] = $user['money'];
+           
             return TRUE;
         }
         else{

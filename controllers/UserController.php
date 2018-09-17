@@ -6,10 +6,46 @@ use models\User;
 use models\Order;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Intervention\Image\ImageManagerStatic as image;
 // use libs\Redis;
 
 class UserController
 {   
+
+    // 设置头像
+    public function setavatar()
+    {
+        // 上传新头像
+        $upload = \libs\Uploader::make();
+        $path = $upload->upload('avatar', 'avatar');
+        
+        // 裁切图片
+        $image = Image::make(ROOT . 'public/uploads/'.$path);
+        // 注意：Crop 参数必须是整数，所以需要转成整数：(int)
+        $image->crop((int)$_POST['w'], (int)$_POST['h'], (int)$_POST['x'], (int)$_POST['y']);
+        // 保存时覆盖原图
+        $image->save(ROOT . 'public/uploads/'.$path);
+
+        // 保存到 user 表中
+        $model = new User;
+        $data =  $model->setAvatar('/uploads/'.$path);
+        
+
+
+        // 注意：网站中图片有两个路径
+        // 浏览器（从网站根目录开始找）： /uploads/avatar/20180914/041a05ec7f7179dab8e00b13de997f1a.jpg
+        // 硬盘上的路径 :    D:/www/blog/7f7179dab8e00b13de997f1a.jpg
+        // 删除原头像
+        @unlink( ROOT . 'public'.$_SESSION['avatar'] );
+
+        // 设置新头像
+        $_SESSION['avatar'] = '/uploads/'.$path;
+
+
+        message('设置成功', 2, '/blog/index');
+    }
+
+
 
     //显示批量上传视图
     public function douploadm(){
@@ -73,15 +109,6 @@ class UserController
         view('users.add');
     }
 
-
-    //调用图片上传类 实现图片上传
-    public function setavatar(){
-       
-       $upload = \libs\Uploader::make();
-        //参数一、 表单中的文件名
-        //参数二、 保存到二级目录名
-        $path = $upload->upload('avatar','avatar');
-    }
 
     //显示上传头像视图
     public function avatar(){
