@@ -4,7 +4,52 @@ namespace models;
 use PDO;
 
 class Blog extends Base
-{
+{   
+
+    //取出点赞过这个日志的用户信息
+    public function agreeList($id){
+        $sql = 'SELECT b.id,b.email,b.avatar FROM blog_zan a LEFT JOIN users b on a.user_id=b.id WHERE a.blog_id=?';
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute([
+            $id
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // 点赞
+    public function zan($id)
+    {
+        // 判断是否点过
+        $stmt = self::$pdo->prepare('SELECT COUNT(*) FROM blog_zan WHERE user_id=? AND blog_id=?');
+        $stmt->execute([
+            $_SESSION['id'],
+            $id
+        ]);
+        $count = $stmt->fetch( PDO::FETCH_COLUMN );
+        if($count == 1)
+        {
+            return FALSE;
+        }
+
+        // 点赞
+        $stmt = self::$pdo->prepare("INSERT INTO blog_zan(user_id,blog_id) VALUES(?,?)");
+        $ret = $stmt->execute([
+            $_SESSION['id'],
+            $id
+        ]);
+
+        // 更新点赞数
+        if($ret)
+        {
+            $stmt = self::$pdo->prepare('UPDATE blogs SET zan_num=zan_num+1 WHERE id=?');
+            $stmt->execute([
+                $id
+            ]);
+        }
+
+        return $ret;
+    }
+
+
     //获取最新的10个日志 供excel使用
     public function getNew(){
 
@@ -133,6 +178,8 @@ class Blog extends Base
     //修改日志数据
     public function update($title,$content,$is_show,$id)
     {   
+
+        $blog = new Blog;
         $sql = "UPDATE blogs SET title= '{$title}',content= '{$content}',is_show={$is_show} WHERE id={$id}";
         // echo $sql;
         if($is_show == 1)

@@ -53,7 +53,13 @@
         <?php foreach($data as $v): ?>
         <tr>
             <td><?=e($v['id'])?></td>
-            <td><a href="/contents/<?=$v['id']?>.html"><?=e($v['title'])?></a></td>
+            <td style="word-break: break-all;">
+                <?php if($v['is_show']==1): ?>
+                    <a href="/contents/<?=$v['id']?>.html"><?=e($v['title'])?></a>
+                <?php else: ?>
+                    <a href="/blog/content?id=<?=$v['id']?>"><?=e($v['title'])?></a>
+                <?php endif; ?>
+            </td>
             <td><?=e($v['created_at'])?></td>
             <td><?=e($v['updated_at'])?></td>
             <td><?= $v['is_show']==1?'显示':'不显示' ?></td>
