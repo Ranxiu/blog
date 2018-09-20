@@ -4,8 +4,18 @@ namespace controllers;
 use models\Blog;
 
 class BlogController
-{ 
+{   
 
+    //取出排行榜的分值 （日志表,评论表,点赞表）
+    public function activeUsers(){
+
+        $model = new BLog;
+
+        $model->activeUsers();
+
+       
+
+    }
     //获取点赞的用户
     public function agreements_list()
     {

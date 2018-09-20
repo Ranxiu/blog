@@ -6,6 +6,74 @@ use PDO;
 class Blog extends Base
 {   
 
+    //获取redis中的排行
+    public function getActiveUsers()
+    {
+        $redis = \libs\Redis::getInstance();
+        $data = $redis->get('active_users');
+        // 转回数组（第二个参数 true:数组    false：对象）
+        return json_decode($data, true);
+    }
+    //取出排行榜的分值 （日志表,评论表,点赞表）
+    public function activeUsers(){
+        //取出所有用户的日志分数
+        $stmt = self::$pdo->query('SELECT user_id,COUNT(*)*5 fz FROM blogs WHERE created_at >= DATE_SUB(CURDATE(),INTERVAL 1 year) GROUP BY user_id');
+        $data1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        //取出所有用户的评论分值
+        $stmt = self::$pdo->query('SELECT user_id,COUNT(*)*3 fz FROM comments WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 year) GROUP BY user_id');
+        $data2 = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+        //取出所有用户的点赞的分值
+        $stmt = self::$pdo->query('SELECT user_id,COUNT(*) fz FROM blog_zan WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 year) GROUP BY user_id');
+        $data3 = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+        //合并数组
+        $arr = [];
+        
+        //合并第一个数组到空数组中
+        foreach($data1 as $v){
+            $arr[$v['user_id']] = $v['fz'];
+        }
+
+        //合并第二个数组到数组中
+        foreach($data2 as $v){
+            if(isset($arr[$v['user_id']]))
+            $arr[$v['user_id']] += $v['fz'];
+            else 
+            $arr[$v['user_id']] = $v['fz'];
+        }
+
+        //合并第三个数组到数组中
+        foreach($data3 as $v){
+            if(isset($arr[$v['user_id']]))
+            $arr[$v['user_id']] += $v['fz'];
+            else 
+            $arr[$v['user_id']] = $v['fz'];
+        }
+
+        //倒序排序
+        arsort($arr);
+        //取前20并保存（第四个参数保留键）
+        $data = array_slice($arr,0,20,TRUE);
+        
+        //取出前20用户的ID
+        //从数组中取出所有的键
+        $userIds = array_keys($data);
+        $userIds = implode(',',$userIds);
+        // var_dump($userIds);
+        //取出用户的头像和email
+        $sql = "SELECT id,email,avatar FROM users WHERE id IN($userIds)";
+
+        $stmt = self::$pdo->query($sql);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        //把计算的结果保存到Redis，因为Redis中只能保存字符串，所以我们需要把数组转成JSON字符串
+        $redis = \libs\Redis::getInstance();
+        $redis->set('active_users',json_encode($data));
+
+    }
+
     //取出点赞过这个日志的用户信息
     public function agreeList($id){
         $sql = 'SELECT b.id,b.email,b.avatar FROM blog_zan a LEFT JOIN users b on a.user_id=b.id WHERE a.blog_id=?';
@@ -48,7 +116,14 @@ class Blog extends Base
 
         return $ret;
     }
+    public function getNewBlog(){
 
+        $stmt = self::$pdo->query("SELECT * FROM blogs limit 10");
+   
+       return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //    var_dump($stmt->fetch(PDO::FETCH_ASSOC));
+    }
 
     //获取最新的10个日志 供excel使用
     public function getNew(){
