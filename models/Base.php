@@ -10,6 +10,7 @@ class Base
 {
     // 保存 PDO 对象
     public static $pdo = null;
+    private function __clone(){}
 
     public function __construct()
     {
@@ -20,5 +21,7 @@ class Base
             self::$pdo = new \PDO('mysql:host='.$config['host'].';dbname='.$config['dbname'], $config['user'], $config['pass']);
             self::$pdo->exec('SET NAMES '.$config['charset']);
         }
+
+        return self::$pdo;
     }
 }

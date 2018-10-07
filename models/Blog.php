@@ -6,9 +6,58 @@ use PDO;
 class Blog extends Base
 {   
 
+    //取出网站分类一级分类
+    public function getType(){
+        $stmt = self::$pdo->query('SELECT * FROM types WHERE pid=0');
+        return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //取出网站分类二级分类
+    public function getTypes(){
+        $stmt = self::$pdo->query('SELECT * FROM types WHERE pid>0');
+        return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //取出一级分类日志
+    public function getBlog($id){
+        $sql = 'select * from blogs where type_id in (select id from types where pid =?)';
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute([
+            $id,
+        ]);
+        return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //取出二级分类日志
+    public function getBlogs($id){
+        $sql = 'select b.*,t.name from blogs b LEFT JOIN types t on b.type_id=t.id where b.type_id=?';
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute([
+            $id,
+        ]);
+        return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //获取分类名
+    public function getTypename($id){
+        $sql = 'select name from types where id = ?';
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute([
+            $id,
+        ]);
+        return  $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    //获取日志详情页
+    public function getBlogContent($id){
+        $sql = 'select * from blogs where id = ?';
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute([
+            $id,
+        ]);
+        return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     //获取redis中的排行
-    public function getActiveUsers()
-    {
+    public function getActiveUsers(){
         $redis = \libs\Redis::getInstance();
         $data = $redis->get('active_users');
         // 转回数组（第二个参数 true:数组    false：对象）

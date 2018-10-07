@@ -1,12 +1,4 @@
-window.onload = function ()
-{
-func1();
-func2();
-func3();
-func4();
-func5();
-func6();
-}
+
 /*topnav select*/
 function func1()
 {
@@ -87,7 +79,7 @@ function func5()
 
 function func6()
 {	
-// ¹Ì¶¨²ã
+// ï¿½Ì¶ï¿½ï¿½ï¿½
 	function buffer(a,b,c){
 		var d;
 		return function(){
@@ -113,3 +105,9 @@ function func6()
 		window.onscroll=buffer(e,150,this)
 	})();
 }
+func1();
+func2();
+func3();
+func4();
+func5();
+func6();

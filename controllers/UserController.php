@@ -206,6 +206,7 @@ class UserController
         $email = $_POST['email'];
         $password = md5($_POST['password']);
 
+        // var_dump($password);
         $user = new \models\User;
 
         if($user->login($email,$password))

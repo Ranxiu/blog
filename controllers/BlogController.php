@@ -70,13 +70,61 @@ class BlogController
 
 
     // 日志列表
-    public function index()
-    {
-        $blog = new Blog;
-        // 搜索数据
-        $data = $blog->search();
-        // 加载视图
-        view('blogs.index', $data);
+    public function getBlog()
+    {   
+
+        if(isset($_GET['pid']))
+        {
+            $id = $_GET['id'];
+            $blog = new Blog;
+            $data = $blog->getBlog($id);
+            if($_GET['id']==1){
+                $t['name'] = '学无止境';
+            }else if($_GET['id']==2){
+                $t['name'] = '慢生活';
+            }
+            view('blogs/index',[
+                'data'=> $data,
+                't' => $t,
+            ]);
+
+        }else {
+            $id = $_GET['id'];
+            $blog = new Blog;
+        
+            $data = $blog->getBlogs($id);
+            
+            $t = $blog->getTypename($id);       
+
+            // var_dump($data);
+            view('blogs/index',[
+                'data'=> $data,
+                't' => $t,
+            ]);
+        }
+       
+    }
+    //获取日志详情页
+    public function info(){
+        $blog = new \models\Blog;
+        $id = $_GET['id'];
+        $data = $blog->getBlogContent($id);
+
+        view('blogs.info',[
+            'data'=> $data,
+        ]);
+    }
+    //时间轴
+    public function time(){
+        view('blogs.time');
+    }
+    //关于我
+    public function about(){
+        view('blogs.about');
+    }
+    //留言页面
+    public function gbook(){
+        view('blogs.gbook');
     }
     //添加日志
     public function create(){

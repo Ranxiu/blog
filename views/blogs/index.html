@@ -1,81 +1,128 @@
-<!DOCTYPE html>
+﻿<!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>日志列表</title>
-    <style>
-    .active {
-        font-weight: bold;
-        color: #F00;
-        font-size: 2em;
-    }
-    </style>
+<meta charset="gbk">
+<title>学无止境_杨青个人博客 - 一个站在web前端设计之路的女技术员个人博客网站</title>
+<meta name="keywords" content="个人博客,杨青个人博客,个人博客模板,杨青" />
+<meta name="description" content="杨青个人博客，是一个站在web前端设计之路的女程序员个人网站，提供个人博客模板免费资源下载的个人原创网站。" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="/css/base.css" rel="stylesheet">
+<link href="/css/index.css" rel="stylesheet">
+<link href="/css/m.css" rel="stylesheet">
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<script src="/js/jquery.easyfader.min.js"></script>
+<script src="/js/scrollReveal.js"></script>
+<!--[if lt IE 9]>
+<script src="js/modernizr.js"></script>
+<![endif]-->
+<script>
+    $.get('/index/nav',function(data){
+      $('header').html(data);
+    });
+</script>
 </head>
 <body>
-    <?php view('common.nav') ?>
-    <h1>日志列表</h1>  <h3><a href="/blog/create"></a></h3>  
+    <header> 
 
-    <form>
-        <div>
-            关键字：
-            <input type="text" name="keyword" value="<?=@$_GET['keyword']?>">
-            发表日期：
-            <input type="text" name="start_date" value="<?=@$_GET['start_date']?>"> ~
-            <input type="text" name="end_date" value="<?=@$_GET['end_date']?>">
-            是否显示：
-            <input type="radio" name="is_show" value="" <?php if(@$_GET['is_show']!='1' && @$_GET['is_show']!=='0') echo 'checked'; ?> > 全部
-            <input type="radio" name="is_show" value="1" <?php if(@$_GET['is_show']=='1') echo 'checked'; ?> > 显示
-            <input type="radio" name="is_show" value="0" <?php if(@$_GET['is_show']=='0') echo 'checked'; ?> > 不显示
-            <input type="submit" value="搜索">
-        </div>
-    </form>
+    </header>
 
-    <br>
+<div class="pagebg sh"></div>
+<div class="container">
+  <h1 class="t_nav"><span>不要轻易放弃。学习成长的路上，我们长路漫漫，只因学无止境。 </span><a href="/" class="n2"><?php echo $t['name']?></a></h1>
+  <!--blogsbox begin-->
+  <div class="blogsbox">
 
-    <table border="1" width="100%">
-        <tr>
-            <th>ID</th>
-            <th width="40%">标题</th>
-            <th>
-                发表日期
-                <a href="?<?=getUrlParams(['odby','odway'])?>odby=date&odway=asc">☝︎</a>
-                <a href="?<?=getUrlParams(['odby','odway'])?>odby=date&odway=desc">☟</a>
-            </th>
-            <th>修改日期</th>
-            <th>是否显示</th>
-            <th>
-                浏览量
-                <a href="?<?=getUrlParams(['odby','odway'])?>odby=display&odway=asc">☝︎</a>
-                <a href="?<?=getUrlParams(['odby','odway'])?>odby=display&odway=desc">☟</a>
-            </th>
-            <th>操作</th>
-        </tr>
-        <?php foreach($data as $v): ?>
-        <tr>
-            <td><?=e($v['id'])?></td>
-            <td style="word-break: break-all;">
-                <?php if($v['is_show']==1): ?>
-                    <a href="/contents/<?=$v['id']?>.html"><?=e($v['title'])?></a>
-                <?php else: ?>
-                    <a href="/blog/content?id=<?=$v['id']?>"><?=e($v['title'])?></a>
-                <?php endif; ?>
-            </td>
-            <td><?=e($v['created_at'])?></td>
-            <td><?=e($v['updated_at'])?></td>
-            <td><?= $v['is_show']==1?'显示':'不显示' ?></td>
-            <td><?=e($v['display'])?></td>
-            <td>
-                <a href="/blog/edit?id=<?=$v['id']?>">修改</a>
-                <form action="/blog/delete" methods="post">
-                    <input type="hidden" name="id" value="<?=$v['id']?>">
-                    <input type="submit" value="删除">
-                </form>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-    <br>
-    <?=$btns?> 
-    <?php view('common.footer') ?>
+    <?php foreach($data as $v):?>
+    <div class="blogs" data-scroll-reveal="enter bottom over 1s" >
+      <h3 class="blogtitle"><a href="/blog/info?id=<?php echo $v['id']?>" target="_blank"><?php echo $v['title'] ?></a></h3>
+      <span class="blogpic"><a href="/blog/info?id=<?php echo $v['id']?>" target="_blank" title=""><img src="<?php echo $v['image']?>" alt=""></a></span>
+      <p class="blogtext"><?php echo $v['jianjie']?></p>
+      <div class="bloginfo">
+        <ul>
+          <li class="author"><a href="/"><?php echo $v['user_name']?></a></li>
+          <li class="lmname"><a href="/"><?php echo $t['name']?></a></li>
+          <li class="timer"><?php echo substr($v['created_at'],0,10)?></li>
+          <li class="view"><span><?php echo $v['display']?></span>已阅读</li>
+          <li class="like"><?php echo $v['zan_num']?></li>
+        </ul>
+      </div>
+    </div>
+    <?php endforeach;?>
+    
+    <!-- <div class="pagelist"><a title="Total record">&nbsp;<b>45</b> </a>&nbsp;&nbsp;&nbsp;<b>1</b>&nbsp;<a href="/download/index_2.html">2</a>&nbsp;<a href="/download/index_2.html">下一页</a>&nbsp;<a href="/download/index_2.html">尾页</a></div> -->
+    
+  </div>
+  <!--blogsbox end-->
+  <div class="sidebar">
+    <div class="zhuanti">
+      <h2 class="hometitle">特别推荐</h2>
+      <ul>
+        <li> <i><img src="/images/banner03.jpg"></i>
+          <p>帝国cms调用方法 <span><a href="/">阅读</a></span> </p>
+        </li>
+        <li> <i><img src="/images/b04.jpg"></i>
+          <p>5.20 我想对你说 <span><a href="/">阅读</a></span></p>
+        </li>
+        <li> <i><img src="/images/b05.jpg"></i>
+          <p>个人博客，属于我的小世界！ <span><a href="/">阅读</a></span></p>
+        </li>
+      </ul>
+    </div>
+    <div class="tuijian">
+      <h2 class="hometitle">推荐文章</h2>
+      <ul class="tjpic">
+        <i><img src="/images/toppic01.jpg"></i>
+        <p><a href="/">别让这些闹心的套路，毁了你的网页设计</a></p>
+      </ul>
+      <ul class="sidenews">
+        <li> <i><img src="/images/toppic01.jpg"></i>
+          <p><a href="/">别让这些闹心的套路，毁了你的网页设计</a></p>
+          <span>2018-05-13</span> </li>
+        <li> <i><img src="/images/toppic02.jpg"></i>
+          <p><a href="/">给我模板PSD源文件，我给你设计HTML！</a></p>
+          <span>2018-05-13</span> </li>
+        <li> <i><img src="/images/v1.jpg"></i>
+          <p><a href="/">别让这些闹心的套路，毁了你的网页设计</a></p>
+          <span>2018-05-13</span> </li>
+        <li> <i><img src="/images/v2.jpg"></i>
+          <p><a href="/">给我模板PSD源文件，我给你设计HTML！</a></p>
+          <span>2018-05-13</span> </li>
+      </ul>
+    </div>
+    <div class="tuijian">
+      <h2 class="hometitle">点击排行</h2>
+      <ul class="tjpic">
+        <i><img src="/images/toppic01.jpg"></i>
+        <p><a href="/">别让这些闹心的套路，毁了你的网页设计</a></p>
+      </ul>
+      <ul class="sidenews">
+        <li> <i><img src="/images/toppic01.jpg"></i>
+          <p><a href="/">别让这些闹心的套路</a></p>
+          <span>2018-05-13</span> </li>
+        <li> <i><img src="/images/toppic02.jpg"></i>
+          <p><a href="/">给我模板PSD源文件，我给你设计HTML！</a></p>
+          <span>2018-05-13</span> </li>
+        <li> <i><img src="/images/v1.jpg"></i>
+          <p><a href="/">别让这些闹心的套路，毁了你的网页设计</a></p>
+          <span>2018-05-13</span> </li>
+        <li> <i><img src="/images/v2.jpg"></i>
+          <p><a href="/">给我模板PSD源文件，我给你设计HTML！</a></p>
+          <span>2018-05-13</span> </li>
+      </ul>
+    </div>
+    <div class="cloud">
+      <h2 class="hometitle">标签云</h2>
+      <ul>
+        <a href="/">陌上花开</a> <a href="/">校园生活</a> <a href="/">html5</a> <a href="/">SumSung</a> <a href="/">青春</a> <a href="/">温暖</a> <a href="/">阳光</a> <a href="/">三星</a><a href="/">索尼</a> <a href="/">华维荣耀</a> <a href="/">三星</a> <a href="/">索尼</a>
+      </ul>
+    </div>
+    
+    
+  </div>
+</div>
+<footer>
+  <p>Design by <a href="http://www.yangqq.com" target="_blank">杨青个人博客</a> <a href="/">蜀ICP备11002373号-1</a></p>
+</footer>
+<a href="#" class="cd-top">Top</a>
 </body>
 </html>
