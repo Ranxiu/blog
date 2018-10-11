@@ -3,13 +3,13 @@ namespace models;
 
 use PDO;
 
-class Order extends Base {
+class Order extends Model {
     //下订单
     public function create($money){
 
         $flake = new \libs\Snowflake(1023);
 
-        $stmt = self::$pdo->prepare('INSERT INTO orders(user_id,money,sn) VALUES(?,?,?)');
+        $stmt = $this->_db->prepare('INSERT INTO orders(user_id,money,sn) VALUES(?,?,?)');
 
         return $stmt->execute([
             $_SESSION['id'],        
@@ -20,7 +20,7 @@ class Order extends Base {
     }
     //根据编号从数据库中取出订单信息
     public function findBySn($sn){
-        $stmt = self::$pdo->prepare('SELECT * FROM orders where sn=?');
+        $stmt = $this->_db->prepare('SELECT * FROM orders where sn=?');
         $stmt->execute([
             $sn
         ]);
@@ -30,7 +30,7 @@ class Order extends Base {
     //设置订单为已支付的状态
     public function setPaid($sn){
         
-        $stmt = self::$pdo->prepare("UPDATE orders SET status=1,pay_time=now() WHERE sn=?");
+        $stmt = $this->_db->prepare("UPDATE orders SET status=1,pay_time=now() WHERE sn=?");
         return $stmt->execute([
             $sn
         ]);
@@ -61,7 +61,7 @@ class Order extends Base {
 
         // 制作按钮
         // 取出总的记录数
-        $stmt = self::$pdo->prepare("SELECT COUNT(*) FROM orders WHERE $where");
+        $stmt = $this->_db->prepare("SELECT COUNT(*) FROM orders WHERE $where");
         $stmt->execute();
         $count = $stmt->fetch( PDO::FETCH_COLUMN );
         // 计算总的页数（ceil：向上取整（天花板）， floor：向下取整（地板））
@@ -83,7 +83,7 @@ class Order extends Base {
         $sql = "SELECT * FROM orders WHERE $where ORDER BY $odby $odway LIMIT $offset,$perpage";
         // echo $sql;
         // die();
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         // 执行 SQL
         $stmt->execute();
 
@@ -97,15 +97,15 @@ class Order extends Base {
     }
 
     public function startTrans(){
-        self::$pdo->exec('start transaction');
+        $this->_db->exec('start transaction');
     }
 
     public function commit(){
-        self::$pdo->exec('commit');
+        $this->_db->exec('commit');
     }
 
     public function rollback(){
-        self::$pdo->exec('rollback');
+        $this->_db->exec('rollback');
     }
 }
 

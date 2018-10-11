@@ -3,11 +3,20 @@ namespace models;
 
 use PDO;
 
-class User extends Base
+class User extends Model
 {   
+    //获取该用户注册账号时的时间
+    public function getTime(){
+        $stmt = $this->_db->prepare('SELECT created_at FROM users WHERE id = ?');
+        $stmt->execute([
+            $_SESSION['id'],
+        ]);
+        return $stmt->fetch(PDO::FETCH_COLUMN);
+    }
+
     //获取所有用户
     public function getAll(){
-        $stmt = self::$pdo->query('SELECT * FROM users');
+        $stmt = $this->_db->query('SELECT * FROM users');
 
         return  $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -15,18 +24,24 @@ class User extends Base
     //设置头像
     public function setAvatar($path)
     {
-        $stmt = self::$pdo->prepare('UPDATE users SET avatar=? WHERE id=?');
+        $stmt = $this->_db->prepare('UPDATE users SET avatar=? WHERE id=?');
         $stmt->execute([
             $path,
             $_SESSION['id']
         ]);
     }
+    //检查账号是否已经存在
+    public function isexits($email){
+        $stmt = $this->_db->prepare('SELECT id from users where email=?');
+        return $stmt->execute([
+            $email,
+        ]);
+    }
 
-
-    
+    //注册账号
     public function add($email,$password)
     {
-        $stmt = self::$pdo->prepare("INSERT INTO users (email,password) VALUES(?,?)");
+        $stmt = $this->_db->prepare("INSERT INTO users (email,password) VALUES(?,?)");
         return $stmt->execute([
                                 $email,
                                 $password,
@@ -35,7 +50,7 @@ class User extends Base
 
     public function login($email,$password)
     {
-        $stmt = self::$pdo->prepare("SELECT * FROM users WHERE email=? AND password=?");
+        $stmt = $this->_db->prepare("SELECT * FROM users WHERE email=? AND password=?");
         $stmt->execute([
             $email,
             $password,
@@ -45,9 +60,6 @@ class User extends Base
         if($user){
             $_SESSION['id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
-            $_SESSION['money'] = $user['money'];
-            $_SESSION['avatar'] = $user['avatar'];
-           
             return TRUE;
         }
         else{
@@ -57,7 +69,7 @@ class User extends Base
     // 为用户增加金额
     public function addMoney($money, $userId)
     {
-        $stmt = self::$pdo->prepare("UPDATE users SET money=money+? WHERE id=?");
+        $stmt = $this->_db->prepare("UPDATE users SET money=money+? WHERE id=?");
         return $stmt->execute([
             $money,
             $userId
@@ -71,7 +83,7 @@ class User extends Base
         $id = $_SESSION['id'];
         
         //根据当前用户id查询当前数据库中的余额
-        $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id = ?');
+        $stmt = $this->_db->prepare('SELECT money FROM users WHERE id = ?');
         $stmt->execute([$id]);
         $money = $stmt->fetch( PDO::FETCH_COLUMN );
         // 更新到SESSION中

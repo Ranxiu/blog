@@ -196,11 +196,32 @@ class UserController
     //退出登陆
     public function logout(){
 
-        unset($_SESSION['id']);
+        unset($_SESSION['email']);
       
         message('退出成功',2,'/user/login');
     }
+    //呈现注册界面
+    public function regist(){
+        view('users.regist');
+    }
+    //注册表单处理
+    public function doregist(){
+        $email = $_POST['email'];
+        $password = md5($_POST['password']);
+        $user = new \models\User;
+        //查看该账号是否已经存在
+        $num = $user->isexits($email);
 
+        if(!$num){
+             //注册账号
+            $stmt = $user->add($email,$password);
+
+        }else{
+            echo "<script>alert('该账号已经存在');location.href='/user/regist'</script>";
+
+        }
+        
+    }
     //登陆校验
     public function dologin(){
         $email = $_POST['email'];
@@ -210,8 +231,9 @@ class UserController
         $user = new \models\User;
 
         if($user->login($email,$password))
-        {
-            message('登陆成功！',2,'/blog/index');
+        {   
+            $_SESSION['email'] = $email;
+            message('登陆成功！',2,'/index/index');
         }
         else{
             message('用户名或者密码错误' ,1, '/user/login');

@@ -1,0 +1,14 @@
+<h2 class="hometitle">点击排行</h2>
+      <ul class="tjpic">
+        <i><img src="<?php echo $data['da']['image']?>"></i>
+        <p><a href="/blog/info?id=<?php echo $data['da']['id']?>"><?php echo $data['da']['title']?></a></p>
+      </ul>
+      <ul class="sidenews">
+          <?php foreach($data['xiao'] as $v):?>
+        <li> 
+            <i><img src="<?php echo $v['image'] ?>"></i>
+            <p><a href="/blog/info?id=<?php echo $v['id']?>"><?php echo $v['title'] ?></a></p>
+            <span>2018-05-13</span> 
+        </li>
+        <?php endforeach; ?>
+      </ul>

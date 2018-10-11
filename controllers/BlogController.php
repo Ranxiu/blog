@@ -12,9 +12,6 @@ class BlogController
         $model = new BLog;
 
         $model->activeUsers();
-
-       
-
     }
     //获取点赞的用户
     public function agreements_list()
@@ -104,7 +101,7 @@ class BlogController
         }
        
     }
-    //获取日志详情页
+    //根据id获取日志详情页
     public function info(){
         $blog = new \models\Blog;
         $id = $_GET['id'];
@@ -112,6 +109,36 @@ class BlogController
 
         view('blogs.info',[
             'data'=> $data,
+        ]);
+    }
+    //获取特别推荐日志 
+    public function getTbtj(){
+        $blog = new \models\Blog;
+        $data = $blog->getTbtj();
+        // echo '<pre>';
+        // var_dump($data);
+        view('common.tbtj',[
+            'data'=>$data,
+        ]);
+    }
+    //普通推荐文章 1大4小
+    public function getPttj(){
+        $blog = new \models\Blog;
+        $data = $blog->getPttj();
+        // echo '<pre>';
+        // var_dump($data);
+        view('common.pttj',[
+            'data'=>$data,
+        ]);
+    }
+    //普通推荐文章 1大4小
+    public function getDjpx(){
+        $blog = new \models\Blog;
+        $data = $blog->getDjpx();
+        // echo '<pre>';
+        // var_dump($data);
+        view('common.djpx',[
+            'data'=>$data,
         ]);
     }
     //时间轴
@@ -129,22 +156,56 @@ class BlogController
     //添加日志
     public function create(){
         // 加载视图
-        view('blogs.create');
+        //取出一级分类
+        $blog = new \models\Blog;
+        $topCat = $blog->getType();
+        
+        view('blogs.create',[
+            'topCat'=>$topCat,
+        ]);
+    }
+
+
+    //根据一级分类ID取出二级分类
+    public function ajax_get_cat(){
+
+        $id = (int)$_GET['id'];
+        $blog = new \models\Blog;
+        // 根据这个ID查询子分类
+        $data = $blog->ajax_get_cat($id);
+        // 转成 JSON
+        echo json_encode($data);
 
     }
-    //添加日志 (视图)
-    public function store(){
 
-        $title = $_POST['title'];
-        $content = $_POST['content'];
-        $is_show = $_POST['is_show'];
+    // 处理添加日志表单
+    public function insert()
+    {   
+        //新注册用户注册三天内不能发布日志
+        $user = new \models\User;
+        $time = $user->getTime();//259200=3天
+        $oldtime = strtotime($time); //账号注册时的时间戳
+        $newtime = time(); //当前时间戳
+        //②每人每天的发帖不能超过5篇或者超过5篇后多余的不予显示
+        //$today = date('Y-m-d 0:0:0');
+        //$sql = 'select count(*) from blogs where created_at >= $today '
+        //③删除某人某个时间段之后的帖子。
+        //$time = 'Y-m-d H:i:s';
+        //$sql = 'delete from blogs where user_id=1 and created_at >=$time'
 
-        $blog = new Blog;
-        $blog->add($title,$content,$is_show);
-
-        // 跳转
-        message('发表成功', 2, '/blog/index');
+        // if($oldtime-259200>$newtime){
+           
+            // var_dump($_POST);die;
+            $model = new \models\Blog;
+            $model->fill($_POST);
+            $model->insert();
+            redirect('/index/index');
+        // }else{
+        //     echo '很抱歉！您的账号注册时间小于三天，所以您暂时无法发布日志';
+        // }
+        
     }
+
     // 显示私有日志
     public function content()
     {
@@ -173,13 +234,14 @@ class BlogController
 
     //删除日志
     public function delete(){
+        
         $id = $_GET['id'];
 
         $blog = new Blog;
         
         $blog->delete($id);
 
-        message('删除成功',2,'/blog/index');
+        message('删除成功',2,'/index/index');
     }
 
     //修改日志显示视图

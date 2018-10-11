@@ -15,6 +15,7 @@ function func2()
 {
 	var oH2 = document.getElementsByTagName("h2")[0];
 	var oUl = document.getElementsByTagName("dl")[0];
+	console.log(oH2);
 	oH2.onclick = function ()
 	{
 		var style = oUl.style;
@@ -106,7 +107,7 @@ function func6()
 	})();
 }
 func1();
-func2();
+// func2();
 func3();
 func4();
 func5();

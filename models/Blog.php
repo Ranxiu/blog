@@ -3,24 +3,67 @@ namespace models;
 
 use PDO;
 
-class Blog extends Base
+class Blog extends Model
 {   
+    // 设置这个模型对应的表
+    protected $table = 'blogs';
+    // 设置允许接收的字段
+    protected $fillable = ['display','zan_num','biaoqian','created_at','updated_at','type_id','user_id','user_name','image','is_show','content','title','jianjie'];
+    // 添加、修改之前执行
+    public function _before_write()
+    {
+        $this->_delete_logo();
+        // 实现上传图片的代码
+        $uploader = \libs\Uploader::make();
+        $logo = '/uploads/' . $uploader->upload('image', 'blogs');
+        // $this->data ：将要插入到数据库中的数据（数组）
+        // 把 logo 加到数组中，就可以插入到数据库
+        $this->data['image'] = $logo;    
+    }
+    // 删除之前被调用（钩子函数：定义好之后自动被调用）
+    public function _before_delete()
+    {
+        $this->_delete_logo();
+    }
+
+    protected function _delete_logo()
+    {
+        // 如果是修改就删除原图片
+        if(isset($_GET['id']))
+        {
+            // 先从数据库中取出原LOGO
+            $ol = $this->findOne($_GET['id']);
+            // 删除
+            @unlink(ROOT . 'public'. $ol['logo']);
+        }
+    }
 
     //取出网站分类一级分类
     public function getType(){
-        $stmt = self::$pdo->query('SELECT * FROM types WHERE pid=0');
+        $stmt = $this->_db->prepare('SELECT * FROM types WHERE pid=0');
+        $stmt->execute();
         return  $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     //取出网站分类二级分类
     public function getTypes(){
-        $stmt = self::$pdo->query('SELECT * FROM types WHERE pid>0');
+        $stmt = $this->_db->prepare('SELECT * FROM types WHERE pid>0');
+        $stmt->execute();
         return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //根据一级分类ID取出二级分类
+    public function ajax_get_cat($id){
+        $stmt = $this->_db->prepare('SELECT * FROM types WHERE pid=?');
+        $stmt->execute([
+            $id,
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     //取出一级分类日志
     public function getBlog($id){
         $sql = 'select * from blogs where type_id in (select id from types where pid =?)';
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $stmt->execute([
             $id,
         ]);
@@ -29,7 +72,7 @@ class Blog extends Base
     //取出二级分类日志
     public function getBlogs($id){
         $sql = 'select b.*,t.name from blogs b LEFT JOIN types t on b.type_id=t.id where b.type_id=?';
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $stmt->execute([
             $id,
         ]);
@@ -39,7 +82,7 @@ class Blog extends Base
     //获取分类名
     public function getTypename($id){
         $sql = 'select name from types where id = ?';
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $stmt->execute([
             $id,
         ]);
@@ -47,15 +90,56 @@ class Blog extends Base
     }
     //获取日志详情页
     public function getBlogContent($id){
-        $sql = 'select * from blogs where id = ?';
-        $stmt = self::$pdo->prepare($sql);
+        $sql = 'select * from (select b.*,t.pid,t.name from blogs b LEFT JOIN types t on b.type_id=t.id) c where c.id=?';
+        $stmt = $this->_db->prepare($sql);
         $stmt->execute([
             $id,
         ]);
-        return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pid = $data['pid'];
+        $sql = 'select name from types where id=?';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute([
+            $pid,
+        ]);
+        $data1 = $stmt->fetch(PDO::FETCH_ASSOC);
+        $data['fname'] = $data1['name'];
+        // var_dump($data);
+        return $data;
     }
+    //特别推荐文章
+    public function getTbtj(){
+        $sql = 'select * from blogs where is_show=1';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //普通推荐文章 1大4小
+    public function getPttj(){
+        $sql = 'select * from blogs where is_show=2 limit 1';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        $data['da'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $sql = 'select * from blogs where is_show=2 limit 1,5';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        $data['xiao'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
+    //点击排行文章 1大4小
+    public function getDjpx(){
+        $sql = 'select * from blogs order by display desc limit 1';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        $data['da'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $sql = 'select * from blogs order by display desc limit 1,5';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+        $data['xiao'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
     //获取redis中的排行
     public function getActiveUsers(){
         $redis = \libs\Redis::getInstance();
@@ -66,15 +150,18 @@ class Blog extends Base
     //取出排行榜的分值 （日志表,评论表,点赞表）
     public function activeUsers(){
         //取出所有用户的日志分数
-        $stmt = self::$pdo->query('SELECT user_id,COUNT(*)*5 fz FROM blogs WHERE created_at >= DATE_SUB(CURDATE(),INTERVAL 1 year) GROUP BY user_id');
+        $stmt = $this->_db->prepare('SELECT user_id,COUNT(*)*5 fz FROM blogs WHERE created_at >= DATE_SUB(CURDATE(),INTERVAL 1 year) GROUP BY user_id');
+        $stmt->execute();
         $data1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         //取出所有用户的评论分值
-        $stmt = self::$pdo->query('SELECT user_id,COUNT(*)*3 fz FROM comments WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 year) GROUP BY user_id');
+        $stmt = $this->_db->prepare('SELECT user_id,COUNT(*)*3 fz FROM comments WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 year) GROUP BY user_id');
+        $stmt->execute();
         $data2 = $stmt->fetchAll( PDO::FETCH_ASSOC );
 
         //取出所有用户的点赞的分值
-        $stmt = self::$pdo->query('SELECT user_id,COUNT(*) fz FROM blog_zan WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 year) GROUP BY user_id');
+        $stmt = $this->_db->prepare('SELECT user_id,COUNT(*) fz FROM blog_zan WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 year) GROUP BY user_id');
+        $stmt->execute();
         $data3 = $stmt->fetchAll( PDO::FETCH_ASSOC );
 
         //合并数组
@@ -114,7 +201,8 @@ class Blog extends Base
         //取出用户的头像和email
         $sql = "SELECT id,email,avatar FROM users WHERE id IN($userIds)";
 
-        $stmt = self::$pdo->query($sql);
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         //把计算的结果保存到Redis，因为Redis中只能保存字符串，所以我们需要把数组转成JSON字符串
@@ -126,7 +214,7 @@ class Blog extends Base
     //取出点赞过这个日志的用户信息
     public function agreeList($id){
         $sql = 'SELECT b.id,b.email,b.avatar FROM blog_zan a LEFT JOIN users b on a.user_id=b.id WHERE a.blog_id=?';
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $stmt->execute([
             $id
         ]);
@@ -136,7 +224,7 @@ class Blog extends Base
     public function zan($id)
     {
         // 判断是否点过
-        $stmt = self::$pdo->prepare('SELECT COUNT(*) FROM blog_zan WHERE user_id=? AND blog_id=?');
+        $stmt = $this->_db->prepare('SELECT COUNT(*) FROM blog_zan WHERE user_id=? AND blog_id=?');
         $stmt->execute([
             $_SESSION['id'],
             $id
@@ -148,7 +236,7 @@ class Blog extends Base
         }
 
         // 点赞
-        $stmt = self::$pdo->prepare("INSERT INTO blog_zan(user_id,blog_id) VALUES(?,?)");
+        $stmt = $this->_db->prepare("INSERT INTO blog_zan(user_id,blog_id) VALUES(?,?)");
         $ret = $stmt->execute([
             $_SESSION['id'],
             $id
@@ -157,7 +245,7 @@ class Blog extends Base
         // 更新点赞数
         if($ret)
         {
-            $stmt = self::$pdo->prepare('UPDATE blogs SET zan_num=zan_num+1 WHERE id=?');
+            $stmt = $this->_db->prepare('UPDATE blogs SET zan_num=zan_num+1 WHERE id=?');
             $stmt->execute([
                 $id
             ]);
@@ -167,9 +255,9 @@ class Blog extends Base
     }
     public function getNewBlog(){
 
-        $stmt = self::$pdo->query("SELECT * FROM blogs limit 10");
-   
-       return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->_db->prepare("SELECT * FROM blogs limit 10");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     //    var_dump($stmt->fetch(PDO::FETCH_ASSOC));
     }
@@ -177,7 +265,7 @@ class Blog extends Base
     //获取最新的10个日志 供excel使用
     public function getNew(){
 
-        $stmt = self::$pdo->prepare("SELECT * FROM blogs WHERE 'user_id' = ? ");
+        $stmt = $this->_db->prepare("SELECT * FROM blogs WHERE 'user_id' = ? ");
     //    var_dump("SELECT * FROM blogs WHERE user_id = 1 ");
         $stmt->execute([
             $_SESSION['id']
@@ -252,7 +340,7 @@ class Blog extends Base
 
         // 制作按钮
         // 取出总的记录数
-        $stmt = self::$pdo->prepare("SELECT COUNT(*) FROM blogs WHERE $where");
+        $stmt = $this->_db->prepare("SELECT COUNT(*) FROM blogs WHERE $where");
         $stmt->execute($value);
         $count = $stmt->fetch( PDO::FETCH_COLUMN );
         // 计算总的页数（ceil：向上取整（天花板）， floor：向下取整（地板））
@@ -274,7 +362,7 @@ class Blog extends Base
         $sql = "SELECT * FROM blogs WHERE $where ORDER BY $odby $odway LIMIT $offset,$perpage";
         // echo $sql;
         // die();
-        $stmt = self::$pdo->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         // 执行 SQL
         $stmt->execute($value);
 
@@ -290,7 +378,7 @@ class Blog extends Base
     public function find($id){
      
        
-        $stmt = self::$pdo->prepare("SELECT * FROM blogs WHERE id = ? ");
+        $stmt = $this->_db->prepare("SELECT * FROM blogs WHERE id = ? ");
        
         $stmt->execute([
             $id
@@ -300,32 +388,32 @@ class Blog extends Base
     }
     
     //修改日志数据
-    public function update($title,$content,$is_show,$id)
-    {   
+    // public function update()
+    // {   
 
-        $blog = new Blog;
-        $sql = "UPDATE blogs SET title= '{$title}',content= '{$content}',is_show={$is_show} WHERE id={$id}";
-        // echo $sql;
-        if($is_show == 1)
-        {
-            $blog->makeHtml($id);
-        }
-        else
-        {
-            // 如果改为私有，就要将原来的静态页删除掉
-            $blog->deleteHtml($id);
-        }
+    //     $blog = new Blog;
+    //     $sql = "UPDATE blogs SET title= '{$title}',content= '{$content}',is_show={$is_show} WHERE id={$id}";
+    //     // echo $sql;
+    //     if($is_show == 1)
+    //     {
+    //         $blog->makeHtml($id);
+    //     }
+    //     else
+    //     {
+    //         // 如果改为私有，就要将原来的静态页删除掉
+    //         $blog->deleteHtml($id);
+    //     }
 
-        return $stmt = self::$pdo->exec($sql);
-        // return $stmt->execute([
-        //     $title,
-        //     $content,
-        //     $is_show,
-        //     $id,
-        // ]);
-            // echo $sql;
-        // var_dump($title,$content,$is_show,$id);
-    }
+    //     return $stmt = $this->_db->exec($sql);
+    //     // return $stmt->execute([
+    //     //     $title,
+    //     //     $content,
+    //     //     $is_show,
+    //     //     $id,
+    //     // ]);
+    //         // echo $sql;
+    //     // var_dump($title,$content,$is_show,$id);
+    // }
 
     //为某一个日志生成静态页面
         //参数：日志的id
@@ -352,7 +440,7 @@ class Blog extends Base
 
     public function content2html()
     {
-        $stmt = self::$pdo->query('SELECT * FROM blogs');
+        $stmt = $this->_db->query('SELECT * FROM blogs');
         $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
        
        
@@ -383,7 +471,7 @@ class Blog extends Base
     public function index2html()
     {
         // 取 前5 条记录 数据 
-        $stmt = self::$pdo->query("SELECT * FROM blogs WHERE is_show=1 ORDER BY id DESC LIMIT 10");
+        $stmt = $this->_db->query("SELECT * FROM blogs WHERE is_show=1 ORDER BY id DESC LIMIT 10");
         $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);   
         
         // 开启一个缓冲区
@@ -404,7 +492,7 @@ class Blog extends Base
     //删除日志
     public function delete($id){
         //只能删除自己的日志
-        $stmt = self::$pdo->prepare('DELETE FROM blogs WHERE id = ? AND user_id = ?');
+        $stmt = $this->_db->prepare('DELETE FROM blogs WHERE id = ? AND user_id = ?');
         $blog->deleteHtml($id);
         $stmt->execute([
             $id,
@@ -438,7 +526,7 @@ class Blog extends Base
         else
         {
             // 从数据库中取出浏览量
-            $stmt = self::$pdo->prepare('SELECT display FROM blogs WHERE id=?');
+            $stmt = $this->_db->prepare('SELECT display FROM blogs WHERE id=?');
             $stmt->execute([$id]);
             $display = $stmt->fetch( PDO::FETCH_COLUMN );
             $display++;
@@ -463,7 +551,7 @@ class Blog extends Base
         {
             $id = str_replace('blog-', '', $k);
             $sql = "UPDATE blogs SET display={$v} WHERE id = {$id}";
-            self::$pdo->exec($sql);
+            $this->_db->exec($sql);
         }
     }
     //添加日志表单提交
@@ -477,7 +565,7 @@ class Blog extends Base
             $blog->makeHtml($id);
         }
         
-        $stmt = self::$pdo->prepare("INSERT INTO blogs(title,content,is_show,user_id,created_at) VALUES(?,?,?,?,?)");
+        $stmt = $this->_db->prepare("INSERT INTO blogs(title,content,is_show,user_id,created_at) VALUES(?,?,?,?,?)");
         $ret = $stmt->execute([
             $title,
             $content,
@@ -497,7 +585,92 @@ class Blog extends Base
             exit;
         }
         // 返回新插入的记录的ID
-        return self::$pdo->lastInsertId();
+        return $this->_db->lastInsertId();
     }
+    
+    // 添加、修改之后执行
+    public function _after_write()
+    {
+        /**
+         * 在我这个框架中，
+         * 通过 $this->data['id']：获取新添加的记录的ID
+         */
 
+        // var_dump( $_FILES );
+        // exit;
+
+        /**
+         * 处理商品属性
+         */
+
+        $stmt = $this->_db->prepare("INSERT INTO goods_attribute
+                        (attr_name,attr_value,goods_id) VALUES(?,?,?)");
+        // 循环每一个属性，插入到属性表
+        foreach($_POST['attr_name'] as $k => $v)
+        {
+            /**
+             * INSERT INTO goods_attribute
+             * (attr_name,attr_value,goods_id) 
+             *       VALUES(?,?,?)
+             */
+            $stmt->execute([
+                $v,
+                $_POST['attr_value'][$k],
+                $this->data['id'],
+            ]);
+        }
+
+        /**
+          * 商品图片
+          */
+        $uploader = \libs\Uploader::make();
+
+        $stmt = $this->_db->prepare("INSERT INTO goods_image(goods_id,path) VALUES(?,?)");
+        $_tmp = [];
+        // 循环图片
+        foreach($_FILES['image']['name'] as $k => $v)
+        {
+            // 拼出每张图片需要的数组
+            $_tmp['name'] = $v;
+            $_tmp['type'] = $_FILES['image']['type'][$k];
+            $_tmp['tmp_name'] = $_FILES['image']['tmp_name'][$k];
+            $_tmp['error'] = $_FILES['image']['error'][$k];
+            $_tmp['size'] = $_FILES['image']['size'][$k];
+
+            // 放到 $_FILES 数组中
+            $_FILES['tmp'] = $_tmp;
+
+            // upload 这个类会到 $_FILES 中去找图片
+            // 参数一、就代表图片在 $_FILES 数组中的名字
+            // upload 方法现在就可以直接到 $_FILES 中去找到 tmp 来上传了
+            $path = '/uploads/'.$uploader->upload('tmp', 'goods');
+
+            // 执行SQL
+            $stmt->execute([
+                $this->data['id'],
+                $path,
+            ]);
+
+        }
+
+        
+        
+        /**
+           * SKU
+           */
+        $stmt = $this->_db->prepare("INSERT INTO goods_sku
+                (goods_id,sku_name,stock,price) VALUES(?,?,?,?)");
+
+        foreach($_POST['sku_name'] as $k => $v)
+        {
+            $stmt->execute([
+                $this->data['id'],
+                $v,
+                $_POST['stock'][$k],
+                $_POST['price'][$k],
+            ]);
+        } 
+
+
+    }
 }

@@ -1,0 +1,9 @@
+
+    <h2 class="hometitle">特别推荐</h2>
+    <ul>
+        <?php foreach($data as $v): ?>
+        <li> <i><img src="<?php echo $v['image']?>"></i>
+        <p><?php echo $v['title']?> <span><a href="/blog/info?id=<?php echo $v['id'] ?>">阅读</a></span> </p>
+        </li>
+        <?php endforeach; ?>
+    </ul>

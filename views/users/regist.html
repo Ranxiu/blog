@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>登录</title>
+    <title>注册</title>
     <meta name="keywords" content="个人博客,杨青个人博客,个人博客模板,杨青" />
     <meta name="description" content="杨青个人博客，是一个站在web前端设计之路的女程序员个人网站，提供个人博客模板免费资源下载的个人原创网站。" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+   
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link href="/css/base.css" rel="stylesheet">
     <link href="/css/index.css" rel="stylesheet">
@@ -25,7 +27,7 @@
          #search_bar {
             position: absolute;
             right: 187px;
-         }   
+         } 
          form {
              border:1px solid #777;
              padding:30px;
@@ -38,9 +40,9 @@
     </header>
     <main class="container" style="min-height:90vh;overflow: hidden;">
         <div style="margin-top: 200px;width:40%;margin-left:285px;">
-            <h2>登录账号</h2>
+            <h2>注册账号</h2>
             
-            <form action="/user/dologin" method="post">
+            <form action="/user/doregist" method="post">
                 <fieldset class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
                     <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
@@ -50,7 +52,7 @@
                     <label for="exampleInputPassword1">Password</label>
                     <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                 </fieldset>
-                <button type="submit" class="btn btn-primary">账号登陆</button>
+                <button type="submit" class="btn btn-primary">账号注册</button>
             </form>
         </div>
     </main>
