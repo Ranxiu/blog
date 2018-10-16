@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<!-- source http://www.scnoob.com More templates http://www.scnoob.com/moban -->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Inspire - Admin and Dashboard Template</title>
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/fonts/line-icons.css">
+
+    <link rel="stylesheet" href="/assets/plugins/morris/morris.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/responsive.css">
+</head>
+
+<body>
+    <div class="app header-default side-nav-dark">
+        <div class="layout">
+
+            <div class="page-container">
+
+                <div class="main-content">
+                    <div class="container-fluid">
+
+                        <div class="breadcrumb-wrapper row">
+                            <div class="col-12 col-lg-3 col-md-6">
+                                <h4 class="page-title">Chart Js</h4>
+                            </div>
+                            <div class="col-12 col-lg-9 col-md-6">
+                                <ol class="breadcrumb float-right">
+                                    <li><a href="index.html">Charts</a></li>
+                                    <li class="active"> / Chart Js</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h4 class="card-title">Line Chart</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted m-b-30 d-inline-block text-truncate w-100">A line chart is a
+                                            way of plotting data points on a line. Often, it is used to show trend data,
+                                            and the comparison of two data sets.</p>
+                                        <canvas id="lineChart" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h4 class="card-title">Bar Chart</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted m-b-30 d-inline-block text-truncate w-100">A bar chart is a
+                                            way of showing data as bars. It is sometimes used to show trend data, and the
+                                            comparison of multiple data sets side by side.</p>
+                                        <canvas id="bar" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h4 class="card-title">Radar Chart</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted m-b-30 d-inline-block text-truncate w-100">A radar chart is
+                                            a way of showing multiple data points and the variation between them. They are
+                                            often useful for comparing the points of two or more different data sets.</p>
+                                        <canvas id="radar" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h4 class="card-title">Pie Chart</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted m-b-30 d-inline-block text-truncate w-100">Pie and doughnut
+                                            charts are probably the most commonly used chart there are. They are divided
+                                            into segments, the arc of each segment shows the proportional value of each piece
+                                            of data.
+                                        </p>
+                                        <canvas id="pie" height="260"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h4 class="card-title">Polar Chart</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted m-b-30 d-inline-block text-truncate w-100">Polar area charts
+                                            are similar to pie charts, but each segment has the same angle - the radius of
+                                            the segment differs depending on the value.</p>
+                                        <canvas id="polarArea" height="260"> </canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header border-bottom">
+                                        <h4 class="card-title">Donut Chart</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-muted m-b-30 d-inline-block text-truncate w-100">Pie and doughnut
+                                            charts are probably the most commonly used chart there are. They are divided
+                                            into segments, the arc of each segment shows the proportional value of each piece
+                                            of data.
+                                        </p>
+                                        <canvas id="doughnut" height="260"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <footer class="content-footer">
+                    <div class="footer">
+                        <div class="copyright">
+                            <span>Copyright © 2018 <b class="text-dark">UIdeck</b>. All Right Reserved More Templates <a
+                                    href="http://www.scnoob.com">菜鸟素材</a> - Collect from <a href="http://www.scnoob.com/moban">网页模板</a></span>
+
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="preloader">
+        <div class="loader" id="loader-1"></div>
+    </div>
+
+
+    <script src="/assets/js/jquery-min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/jquery.app.js"></script>
+    <script src="/assets/js/main.js"></script>
+
+    <script src="/assets/plugins/chart.js/chart.min.js"></script>
+    <script src="/assets/js/chartjs.init.js"></script>
+</body>
+
+<!-- source http://www.scnoob.com More templates http://www.scnoob.com/moban -->
+
+</html>
