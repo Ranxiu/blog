@@ -4,25 +4,19 @@ namespace controllers;
 class AdminController {
 
     //网站后台1
-    public function admin(){
-        view('home.admin');
-    }
+    public function admin(){view('home.admin');}
     //后台头部
-    public function top(){
-        view('home.top');
-    }
+    public function top(){view('home.top');}
     //后台左侧
-    public function menu(){
-        view('home.menu');
-    }
+    public function menu(){view('home.menu');}
     //后台右侧
-    public function main(){
-        view('home.main');
-    }
-     //后台右侧2
-     public function main2(){
-        view('home.main');
-    }
+    public function main(){ view('home.main');}
+    //后台右侧2
+     public function main2(){ view('home.main');}
+
+    //日志模块
+    //日志管理列表页
+    public function blog(){view('blogadmin.index');}
     //应用
     //电子邮件
     public function email(){view('apps.email');}

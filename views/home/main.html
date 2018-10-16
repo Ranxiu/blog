@@ -8,17 +8,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Inspire - Admin and Dashboard Template</title>
 
-    <link rel="stylesheet" type="text/css" href="/assets//css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+   
 
-    <link rel="stylesheet" type="text/css" href="/assets//fonts/line-icons.css">
+    <link rel="stylesheet" type="text/css" href="/assets/fonts/line-icons.css">
 
-    <link rel="stylesheet" href="/assets//plugins/morris/morris.css">
+    <link rel="stylesheet" href="/assets/plugins/morris/morris.css">
 
-    <link rel="stylesheet" type="text/css" href="/assets//css/main.css">
+    <link href="/assets/plugins/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    
+    <link href="/assets/plugins/datatables/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" type="text/css" href="/assets//css/responsive.css">
+    <link href="/assets/plugins/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" href="/assets//plugins/morris/morris.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/responsive.css">
+
+    <link rel="stylesheet" href="/assets/plugins/morris/morris.css">
+
 </head>
 
 <body>
@@ -31,14 +39,9 @@
         
                                 <div class="breadcrumb-wrapper row">
                                     <div class="col-12 col-lg-3 col-md-6">
-                                        <h4 class="page-title">Dashboard 2</h4>
+                                        <h4 class="page-title">我的个人中心</h4>
                                     </div>
-                                    <div class="col-12 col-lg-9 col-md-6">
-                                        <ol class="breadcrumb float-right">
-                                            <li><a href="index.html">Dashboard</a></li>
-                                            <li class="active"> / Dashboard 2</li>
-                                        </ol>
-                                    </div>
+                                  
                                 </div>
         
                             </div>
@@ -51,7 +54,7 @@
                                             </div>
                                             <div class="info-box-content">
                                                 <h4 class="number">1125</h4>
-                                                <p class="info-text">All Properties</p>
+                                                <p class="info-text">总用户数</p>
                                             </div>
                                         </div>
                                     </div>
@@ -61,8 +64,8 @@
                                                 <i class="lni-tag"></i>
                                             </div>
                                             <div class="info-box-content">
-                                                <h4 class="number">351</h4>
-                                                <p class="info-text">For Sale</p>
+                                                <h4 class="number">351123</h4>
+                                                <p class="info-text">总日志数</p>
                                             </div>
                                         </div>
                                     </div>
@@ -73,7 +76,7 @@
                                             </div>
                                             <div class="info-box-content">
                                                 <h4 class="number">774</h4>
-                                                <p class="info-text">For Rent</p>
+                                                <p class="info-text">网站今日PV</p>
                                             </div>
                                         </div>
                                     </div>
@@ -83,8 +86,8 @@
                                                 <i class="lni-wallet"></i>
                                             </div>
                                             <div class="info-box-content">
-                                                <h4 class="number">$49450</h4>
-                                                <p class="info-text">Total Revenue</p>
+                                                <h4 class="number">1324124250</h4>
+                                                <p class="info-text">网站排行</p>
                                             </div>
                                         </div>
                                     </div>
@@ -96,16 +99,15 @@
                                             <div class="col-lg-6 col-md-12 col-xs-12">
                                                 <div class="card">
                                                     <div class="card-body">
-                                                        <h5 class="card-title">Sales Details of Properties</h5>
+                                                        <h5 class="card-title">今日注册用户数</h5>
                                                         <div class="row">
                                                             <div class="col-5 m-t-20">
-                                                                <h3 class="text-primary">$7492</h3>
-                                                                <p class="text-muted">July 2018</p>
-                                                                <b>(149 Sales)</b>
+                                                                <h3 class="text-primary">1223</h3>
+                                                                <p class="text-muted">2018-10-09</p>
                                                             </div>
                                                             <div class="col-7">
                                                                 <div id="sales1" class="text-right">
-                                                                    <div id="morris-bar-example" style="height: 130px"></div>
+                                                                    <div id="morris-bar-example" style="height: 30px"></div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -115,15 +117,14 @@
                                             <div class="col-lg-6 col-md-12 col-xs-12">
                                                 <div class="card">
                                                     <div class="card-body">
-                                                        <h5 class="card-title">Rent Details of Properties</h5>
+                                                        <h5 class="card-title">今日发布日志数</h5>
                                                         <div class="row">
                                                             <div class="col-5  m-t-20">
-                                                                <h3 class="text-info">$1930</h3>
-                                                                <p class="light_op_text">July 2018</p>
-                                                                <b class="">(170 Rentals)</b>
+                                                                <h3 class="text-info">1231231</h3>
+                                                                <p class="light_op_text">2018-10-10</p>
                                                             </div>
                                                             <div class="col-7">
-                                                                <div id="morris-bar-stacked" style="height: 130px"></div>
+                                                                <div id="morris-bar-stacked" style="height: 30px"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -135,7 +136,7 @@
                                                 <div class="properties">
                                                     <div class="card">
                                                         <div class="card-header">
-                                                            <h4 class="card-title">Recent properties</h4>
+                                                            <h4 class="card-title">网站时间轴</h4>
                                                             <div class="card-toolbar">
                                                                 <ul>
                                                                     <li>
@@ -154,11 +155,10 @@
                                                                             <img src="/assets//img/properties/img1.jpg" alt="">
                                                                         </div>
                                                                         <div class="info">
-                                                                            <h4 class="title text-semibold"><a href="#">795 Folsom
-                                                                                    Ave, Suite 600 San Francisco</a></h4>
-                                                                            <p class="m-0">20 July 2018, John Doe</p>
+                                                                            <h4 class="title text-semibold"><a href="#">XXXXXXXx发布了日志XXXXXXX</a></h4>
+                                                                            <p class="m-0">2018-10-06</p>
                                                                             <div class="float-item">
-                                                                                <button class="btn btn-success">Rent</button>
+                                                                                <button class="btn btn-success">查看</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -169,11 +169,10 @@
                                                                             <img src="/assets//img/properties/img2.jpg" alt="">
                                                                         </div>
                                                                         <div class="info">
-                                                                            <h4 class="title text-semibold"><a href="#">795 Folsom
-                                                                                    Ave, Suite 600 San Francisco</a></h4>
-                                                                            <p class="m-0">17 July 2018, Venessa Fern</p>
+                                                                            <h4 class="title text-semibold"><a href="#">XXXXXXXx发布了日志XXXXXXX</a></h4>
+                                                                            <p class="m-0">2018-10-05</p>
                                                                             <div class="float-item">
-                                                                                <button class="btn btn-common">Sale</button>
+                                                                                <button class="btn btn-common">查看</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -184,11 +183,10 @@
                                                                             <img src="/assets//img/properties/img3.jpg" alt="">
                                                                         </div>
                                                                         <div class="info">
-                                                                            <h4 class="title text-semibold"><a href="#">795 Folsom
-                                                                                    Ave, Suite 600 San Francisco</a></h4>
-                                                                            <p class="m-0">13 July 2018, Danielle M. Stong</p>
+                                                                            <h4 class="title text-semibold"><a href="#">XXXXX回复了XXXX的评价</a></h4>
+                                                                            <p class="m-0">2018-10-08</p>
                                                                             <div class="float-item">
-                                                                                <button class="btn btn-success">Rent</button>
+                                                                                <button class="btn btn-success">查看</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -199,11 +197,10 @@
                                                                             <img src="/assets//img/properties/img4.jpg" alt="">
                                                                         </div>
                                                                         <div class="info">
-                                                                            <h4 class="title text-semibold"><a href="#">795 Folsom
-                                                                                    Ave, Suite 600 San Francisco</a></h4>
-                                                                            <p class="m-0">09 July 2018, Ample</p>
+                                                                            <h4 class="title text-semibold"><a href="#">XXXXX评价了XXX的日志</a></h4>
+                                                                            <p class="m-0">2018-10-04</p>
                                                                             <div class="float-item">
-                                                                                <button class="btn btn-common">Sale</button>
+                                                                                <button class="btn btn-common">查看</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -226,12 +223,12 @@
                                                         <figure class="profile-user-avatar">
                                                             <img src="/assets//img/profile/user1.jpg" alt="User Wall">
                                                         </figure>
-                                                        <h3 class="profile-user-name m-0">Michael A. Franklin</h3>
-                                                        <small class="profile-user-address">California, United States</small>
+                                                        <h3 class="profile-user-name m-0">今夕何夕</h3>
+                                                        <small class="profile-user-address">中国，四川</small>
                                                     </div>
                                                     <form class="forms-profile">
                                                         <h4 class="text-center">
-                                                            Request Inquiry
+                                                            添加flag
                                                         </h4>
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
@@ -258,43 +255,43 @@
                                         </div>
                                     </div>
                                 </div>
+                               
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-xs-12">
+                                    <div class="col-12">
                                         <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="card-title">Property Overview</h4>
+                                            <div class="card-header border-bottom">
+                                                <h4 class="card-title">我的flag</h4>
                                             </div>
-                                            <div class="table-overflow">
-                                                <table class="table table-hover table-lg">
+                                            <div class="card-body">
+                                        </p>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="datatable">
                                                     <thead>
                                                         <tr>
-                                                            <td class="text-dark text-semibold">Order No.</td>
-                                                            <td class="text-dark text-semibold">Customer</td>
-                                                            <td class="text-dark text-semibold">Property</td>
-                                                            <td class="text-dark text-semibold">Date</td>
-                                                            <td class="text-dark text-semibold">Status</td>
-                                                            <td class="text-dark text-semibold">Action</td>
+                                                            <td class="text-dark text-semibold">ID</td>
+                                                            <td class="text-dark text-semibold">开始时间</td>
+                                                            <td class="text-dark text-semibold">结束时间</td>
+                                                            <td class="text-dark text-semibold">flag内容</td>
+                                                            <td class="text-dark text-semibold">状态</td>
+                                                            <td class="text-dark text-semibold">操作</td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
                                                             <td>
-                                                                <a href="invoice.html">#ODN84952</a>
+                                                                <a href="invoice.html">#ODN84951</a>
                                                             </td>
-                                                            <td>John Doe</td>
-                                                            <td>795 Folsom Ave, Suite 600 San Francisco</td>
-                                                            <td>25/07/2018</td>
-                                                            <td><a href="#" class="badge badge-success">Paid</a></td>
+                                                            <td>2018/07/25</td>
+                                                            <td>2018/11/11</td>
+                                                            <td>学习使我开心,学习使我快乐</td>
+                                                            <td><a href="#" class="badge badge-danger">未完成</a></td>
                                                             <td>
                                                                 <div class="btn-group dropdown">
                                                                     <a href="javascript: void(0);" class="dropdown-toggle arrow-none btn btn-light btn-sm" data-toggle="dropdown" aria-expanded="false"><i
                                                                             class="lni-more-alt"></i></a>
                                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                                        <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>Edit
-                                                                            Contact</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>Remove</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-envelope mr-2 text-muted"></i>Send
-                                                                            Email</a>
+                                                                        <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>修改</a>
+                                                                        <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>删除</a>
                                                                     </div>
                                                                 </div>
                                                             </td>
@@ -303,64 +300,55 @@
                                                             <td>
                                                                 <a href="invoice.html">#ODN84952</a>
                                                             </td>
-                                                            <td>Venessa Fern</td>
-                                                            <td>795 Folsom Ave, Suite 600 San Francisco</td>
-                                                            <td>19/07/2018</td>
-                                                            <td><a href="#" class="badge badge-info">Pending</a></td>
+                                                            <td>2018/07/25</td>
+                                                            <td>2018/11/11</td>
+                                                            <td>学习使我开心,学习使我快乐</td>
+                                                            <td><a href="#" class="badge badge-danger">未完成</a></td>
                                                             <td>
                                                                 <div class="btn-group dropdown">
                                                                     <a href="javascript: void(0);" class="dropdown-toggle arrow-none btn btn-light btn-sm" data-toggle="dropdown" aria-expanded="false"><i
                                                                             class="lni-more-alt"></i></a>
                                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                                        <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>Edit
-                                                                            Contact</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>Remove</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-envelope mr-2 text-muted"></i>Send
-                                                                            Email</a>
+                                                                            <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>修改</a>
+                                                                            <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>删除</a>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <a href="invoice.html">#ODN84952</a>
+                                                                <a href="invoice.html">#ODN84953</a>
                                                             </td>
-                                                            <td>John Doe</td>
-                                                            <td>795 Folsom Ave, Suite 600 San Francisco</td>
-                                                            <td>15/07/2018</td>
-                                                            <td><a href="#" class="badge badge-danger">Fuiled</a></td>
+                                                            <td>2018/07/25</td>
+                                                            <td>2018/11/11</td>
+                                                            <td>学习使我开心,学习使我快乐</td>
+                                                            <td><a href="#" class="badge badge-success">已完成</a></td>
                                                             <td>
                                                                 <div class="btn-group dropdown">
                                                                     <a href="javascript: void(0);" class="dropdown-toggle arrow-none btn btn-light btn-sm" data-toggle="dropdown" aria-expanded="false"><i
                                                                             class="lni-more-alt"></i></a>
                                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                                        <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>Edit
-                                                                            Contact</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>Remove</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-envelope mr-2 text-muted"></i>Send
-                                                                            Email</a>
+                                                                            <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>修改</a>
+                                                                            <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>删除</a>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <a href="invoice.html">#ODN84952</a>
+                                                                <a href="invoice.html">#ODN84954</a>
                                                             </td>
-                                                            <td>Ample</td>
-                                                            <td>795 Folsom Ave, Suite 600 San Francisco</td>
-                                                            <td>04/07/2018</td>
-                                                            <td><a href="#" class="badge badge-success">Paid</a></td>
+                                                            <td>2018/07/25</td>
+                                                            <td>2018/11/11</td>
+                                                            <td>学习使我开心,学习使我快乐</td>
+                                                            <td><a href="#" class="badge badge-success">已完成</a></td>
                                                             <td>
                                                                 <div class="btn-group dropdown">
                                                                     <a href="javascript: void(0);" class="dropdown-toggle arrow-none btn btn-light btn-sm" data-toggle="dropdown" aria-expanded="false"><i
                                                                             class="lni-more-alt"></i></a>
                                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                                        <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>Edit
-                                                                            Contact</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>Remove</a>
-                                                                        <a class="dropdown-item" href="#"><i class="lni-envelope mr-2 text-muted"></i>Send
-                                                                            Email</a>
+                                                                            <a class="dropdown-item" href="#"><i class="lni-pencil mr-2 text-muted"></i>修改</a>
+                                                                            <a class="dropdown-item" href="#"><i class="lni-trash mr-2 text-muted"></i>删除</a>
                                                                     </div>
                                                                 </div>
                                                             </td>
@@ -368,9 +356,12 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
+                            
                             </div>
                         </div>
         
@@ -404,6 +395,22 @@
             <script src="/assets//plugins/morris/morris.min.js"></script>
             <script src="/assets//plugins/raphael/raphael-min.js"></script>
             <script src="/assets//js/dashborad2.js"></script>
+            <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+            <script src="/assets/plugins/datatables/dataTables.bootstrap4.min.js"></script>
+    
+            <script src="/assets/plugins/datatables/dataTables.buttons.min.js"></script>
+            <script src="/assets/plugins/datatables/buttons.bootstrap4.min.js"></script>
+            <script src="/assets/plugins/datatables/jszip.min.js"></script>
+            <script src="/assets/plugins/datatables/pdfmake.min.js"></script>
+            <script src="/assets/plugins/datatables/vfs_fonts.js"></script>
+            <script src="/assets/plugins/datatables/buttons.html5.min.js"></script>
+            <script src="/assets/plugins/datatables/buttons.print.min.js"></script>
+            <script src="/assets/plugins/datatables/buttons.colVis.min.js"></script>
+    
+            <script src="/assets/plugins/datatables/dataTables.responsive.min.js"></script>
+            <script src="/assets/plugins/datatables/responsive.bootstrap4.min.js"></script>
+    
+            <script src="/assets/js/datatables.init.js"></script>
         </body>
         
         <!-- source http://www.scnoob.com More templates http://www.scnoob.com/moban -->
